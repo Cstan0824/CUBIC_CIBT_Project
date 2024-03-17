@@ -1,0 +1,359 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="CUBIC_CIBT_Project.SiteMaster" %>
+
+<%--//// css vs min.css 
+after done css, can use cssminifier.com to do the convertion   
+Where bootstrap.css is the development version and bootstrap.min.css is production.
+The main purpose of using bootstrap.min.css is to reduce the size of the file(style) that boosts the website speed.
+ if the css need run from server, then we need att runat="server, else the css will not able to link"
+all JS and CSS is crazy important
+--%>
+
+<!DOCTYPE html>
+<style>
+	.aspNetDisabled {
+		padding: .5rem 1rem;
+		margin: 0 .5rem;
+		display: block;
+		color: #3a3b45;
+		text-decoration: none;
+		border-radius: .35rem;
+		white-space: nowrap;
+	}
+
+	.CompanyLogo {
+		text-align: left;
+		/*width:215px;*/
+		width: 240px;
+		height: 32px;
+		float: left;
+		padding: 5px 2px 0px 70px;
+		/*5px 0px 0px 20px;*/
+	}
+</style>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head runat="server">
+
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+
+	<%-- Data Table --%>
+	<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+	<link href="css/sb-admin-2-pro.min.css" rel="stylesheet" />
+	<link rel="icon" type="image/x-icon" href="assets/img/favicon.png" />
+	<script data-search-pseudo-elements defer src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/js/all.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js" crossorigin="anonymous"></script>
+
+	<title>Master</title>
+	<asp:ContentPlaceHolder ID="head" runat="server">
+	</asp:ContentPlaceHolder>
+</head>
+
+
+<body class="nav-fixed">
+
+	<script type="text/javascript">
+		// Disable right-click
+		//document.addEventListener('contextmenu', event => event.preventDefault());
+
+		// Check if DevTools is open
+		var devtoolsIsOpen = false;
+		window.addEventListener('devtoolschange', event => {
+			devtoolsIsOpen = event.detail.open;
+		});
+	</script>
+
+	<%-- Top Nav Bar --%>
+	<nav class="topnav navbar navbar-expand shadow justify-content-between justify-content-sm-start navbar-light bg-white" id="sidenavAccordion">
+		<!-- Sidenav Toggle Button-->
+		<button class="btn btn-icon btn-transparent-dark order-1 order-lg-0 me-2 ms-lg-2 me-lg-0" id="sidebarToggle"><i data-feather="menu"></i></button>
+		<!-- Navbar Brand-->
+		<!-- * * Tip * * You can use text or an image for your navbar brand.-->
+		<!-- * * * * * * When using an image, we recommend the SVG format.-->
+		<!-- * * * * * * Dimensions: Maximum height: 32px, maximum width: 240px-->
+		<span class="pe-3 ps-4 ps-lg-2">
+			<img class="img-fluid mx-1" width="32" height="32" src="Image/SmallLogo.png" />
+			<a class="navbar-brand" href="Default.aspx">CIBT</a></span>
+
+		<!-- Navbar Search Input-->
+		<!-- * * Note: * * Visible only on and above the lg breakpoint-->
+		<form class="form-inline me-auto d-none d-lg-block me-3" hidden>
+			<div class="input-group input-group-joined input-group-solid" hidden>
+				<input class="form-control pe-0" type="search" placeholder="Search" aria-label="Search" />
+				<div class="input-group-text"><i data-feather="search"></i></div>
+			</div>
+		</form>
+
+
+		<!-- Navbar Items-->
+		<ul class="navbar-nav align-items-center ms-auto">
+			<!-- Navbar Search Dropdown-->
+			<!-- * * Note: * * Visible only below the lg breakpoint-->
+			<li class="nav-item dropdown no-caret me-3 d-lg-none">
+				<a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="searchDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i data-feather="search"></i></a>
+				<!-- Dropdown - Search-->
+				<div class="dropdown-menu dropdown-menu-end p-3 shadow animated--fade-in-up" aria-labelledby="searchDropdown">
+					<form class="form-inline me-auto w-100">
+						<div class="input-group input-group-joined input-group-solid">
+							<input class="form-control pe-0" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
+							<div class="input-group-text"><i data-feather="search"></i></div>
+						</div>
+					</form>
+				</div>
+			</li>
+			<!-- User Dropdown-->
+			<li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
+				<a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<img class="img-fluid" src="assets/img/illustrations/profiles/profile-1.png" /></a>
+				<div class="dropdown-menu dropdown-menu-end border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
+					<h6 class="dropdown-header d-flex align-items-center">
+						<img class="dropdown-user-img" src="assets/img/illustrations/profiles/profile-1.png" />
+						<div class="dropdown-user-details">
+							<asp:Label ID="lblLoginNameTopNav" runat="server" Text="" class="inputLabel">AA</asp:Label>
+							<%--<div class="dropdown-user-details-email">vluna@aol.com</div>--%>
+						</div>
+					</h6>
+					<div class="dropdown-divider"></div>
+					<a class="dropdown-item" href="#!" aria-hidden="true" hidden>
+						<div class="dropdown-item-icon"><i data-feather="settings"></i></div>
+						Account
+					</a>
+					<a class="dropdown-item my-auto" href="#FrmLogin.aspx" data-bs-toggle="modal" data-bs-target="#logoutModal">
+						<div class="dropdown-item-icon"><i data-feather="log-out"></i></div>
+						Logout
+					</a>
+				</div>
+			</li>
+		</ul>
+	</nav>
+	<%-- End Top Nav Bar --%>
+
+	<%-- Start Side Bar --%>
+	<div id="layoutSidenav">
+		<div id="layoutSidenav_nav">
+			<nav class="sidenav shadow-right sidenav-light">
+				<%-- Start Side Menu --%>
+				<div class="sidenav-menu">
+					<%-- Start Side Nav --%>
+					<div class="nav accordion" id="accordionSidenav">
+						<!-- Sidenav Menu Heading (Account)-->
+						<!-- * * Note: * * Visible only on and above the sm breakpoint-->
+						<div class="sidenav-menu-heading d-sm-none">Account</div>
+						<!-- Sidenav Link (Alerts)-->
+						<!-- * * Note: * * Visible only on and above the sm breakpoint-->
+						<a class="nav-link d-sm-none" href="#!">
+							<div class="nav-link-icon"><i data-feather="bell"></i></div>
+							Alerts
+                                <span class="badge bg-warning-soft text-warning ms-auto">4 New!</span>
+						</a>
+						<!-- Sidenav Link (Messages)-->
+						<!-- * * Note: * * Visible only on and above the sm breakpoint-->
+						<a class="nav-link d-sm-none" href="#!">
+							<div class="nav-link-icon"><i data-feather="mail"></i></div>
+							Messages
+                                <span class="badge bg-success-soft text-success ms-auto">2 New!</span>
+						</a>
+
+						<%-- Operation --%>
+						<%-- Operation --%>
+						<div class="sidenav-menu-heading">Operation</div>
+
+						<asp:HyperLink class="nav-link collapsed" href="javascript:void(0);" runat="server" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapseOperation" aria-controls="collapseOperation">
+                                <div class="nav-link-icon"><i data-feather="grid"></i></div>
+                                    Admin Setting
+                                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						</asp:HyperLink>
+						<div class="collapse" id="collapseOperation" data-parent="#accordionSidenav">
+							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
+								<!-- Nested Sidenav Accordion (Pages -> Account)-->
+								<asp:HyperLink class="nav-link" ID="HPLinkFrmAccessControl" runat="server" NavigateUrl="FrmAccessControl.aspx?ID=HLinkFrmAccessControl">
+                                           Access Control
+								</asp:HyperLink>
+								<asp:HyperLink class="nav-link" ID="HyperLink2" runat="server" NavigateUrl="FrmClientMaintenance.aspx?ID=HLinkFrmAccessControl">
+                                    Client Maintenance
+								</asp:HyperLink>
+								<asp:HyperLink class="nav-link" ID="HyperLink1" runat="server" NavigateUrl="FrmSupplierMaintenance.aspx?ID=HLinkFrmAccessControl">
+									Supplier Maintenance
+								</asp:HyperLink>
+								<asp:HyperLink class="nav-link" ID="HyperLink3" runat="server" NavigateUrl="FrmProjectMaintenance.aspx?ID=HLinkFrmAccessControl">
+                                    Project Maintenance
+								</asp:HyperLink>
+								<!-- Nested Sidenav Accordion (Pages -> Authentication)-->
+							</nav>
+						</div>
+
+						<%-- End Operation --%>
+
+						<%-- Maintenance --%>
+						<div class="sidenav-menu-heading">Maintenance</div>
+						<!-- Sidenav Accordion (Maintenance)-->
+						<asp:HyperLink class="nav-link collapsed" href="javascript:void(0);" runat="server" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapseMaintenance" aria-controls="collapseMaintenance">
+                                <div class="nav-link-icon"><i data-feather="cpu"></i></div>
+                                    Maintenance
+                                <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						</asp:HyperLink>
+						<div class="collapse" id="collapseMaintenance" data-parent="#accordionSidenav">
+							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavMaintenanceMenu">
+								<!-- Nested Sidenav Accordion (Pages -> Account)-->
+
+								<asp:HyperLink class="nav-link" ID="HPDocumentM" runat="server" NavigateUrl="FrmDocumentMaintenance.aspx?ID=HPDocumentM">
+                                        Document Maintenance
+								</asp:HyperLink>
+
+								<asp:HyperLink class="nav-link" ID="HPCalendar" runat="server" NavigateUrl="FrmBankStatementMaintenance.aspx?ID=HPCalendar">
+                                        Bank Statement Maintenance
+								</asp:HyperLink>
+
+								<asp:HyperLink class="nav-link" ID="HPMMaterial" runat="server" NavigateUrl="FrmInvoiceMaintenance.aspx?ID=HPMMaterial">
+                                        Invoice Maintenance
+								</asp:HyperLink>
+							</nav>
+						</div>
+						<%-- End Maintenance --%>
+
+						<%-- Maintenance --%>
+						<div class="sidenav-menu-heading">Report</div>
+						<!-- Sidenav Accordion (Maintenance)-->
+						<asp:HyperLink class="nav-link collapsed" href="javascript:void(0);" runat="server" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapseReport" aria-controls="collapseReport">
+         <div class="nav-link-icon"><i data-feather="cpu"></i></div>
+             Report
+         <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+						</asp:HyperLink>
+
+						<div class="collapse" id="collapseReport" data-parent="#accordionSidenav">
+							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavReportMenu">
+								<!-- Nested Sidenav Accordion (Pages -> Account)-->
+								<asp:HyperLink class="nav-link" ID="HyperLink4" runat="server" NavigateUrl="FrmProjectListing.aspx?ID=HPDocumentM">
+                 Project Report
+								</asp:HyperLink>
+							</nav>
+						</div>
+
+						<%-- End Maintenance --%>
+					</div>
+					<%-- End  <div class="nav accordion" id="accordionSidenav"> --%>
+				</div>
+				<%-- End  Side Menu --%>
+
+				<!-- Start Sidenav Footer-->
+				<div class="sidenav-footer">
+					<div class="sidenav-footer-content">
+						<div class="sidenav-footer-subtitle">Logged in as:</div>
+						<asp:Label ID="lblLoginNameSideNav" runat="server" Text="" class="sidenav-footer-title"></asp:Label>
+					</div>
+				</div>
+				<!-- End Sidenav Footer-->
+			</nav>
+		</div>
+
+		<%-- Main Content --%>
+		<div id="layoutSidenav_content">
+			<main>
+				<form id="form1" runat="server" defaultbutton="btnDisableEnter">
+					<div>
+						<asp:ContentPlaceHolder ID="MainContent" runat="server">
+						</asp:ContentPlaceHolder>
+					</div>
+
+					<div class="clear">
+						<asp:TextBox ID="txtModuleCode" runat="server" Visible="False"></asp:TextBox>
+						<asp:TextBox ID="txtModuleEditable" runat="server" Visible="False"></asp:TextBox>
+						<asp:Button ID="btnDisableEnter" runat="server" Text="" Style="display: none;" />
+					</div>
+
+				</form>
+				<%-- End Content --%>
+			</main>
+			<footer class="footer-admin mt-auto footer-light">
+				<div class="container-xl px-4">
+					<div class="row">
+						<div class="col-md-6 small">Copyright © CubicSoftware Solution. All Right Reserved. 2023 - <%: DateTime.Now.Year %> . v1.0.1</div>
+						<div class="col-md-6 text-md-end small">
+							<a href="#!">Privacy Policy</a>
+							&middot;
+                                <a href="#!">Terms &amp; Conditions</a>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</div>
+		<%-- End Main Content --%>
+	</div>
+	<%-- End Side Bar --%>
+
+	<!-- Logout Modal-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+					<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body">If you are ready to end your current session, please select 'Logout' below.</div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+					<asp:HyperLink class="btn btn-primary" ID="HLinkLogOut" runat="server" Text="Sign Out" NavigateUrl="FrmLogin.aspx">Sign Out</asp:HyperLink>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Message Modal-->
+	<div class="modal fade" id="MessageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="MessageModalTitle"></h5>
+					<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+				<div class="modal-body" id="MessageModalContent"></div>
+				<div class="modal-footer">
+					<button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+					<asp:HyperLink class="btn btn-primary" ID="HLinkMsgModal" runat="server" Text="Sign Out" NavigateUrl="#">-</asp:HyperLink>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery and Bootstrap core JavaScript -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<%-- BootStrap --%>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+	<script src="js/sb-admin-2-pro.min.js"></script>
+	<script src="js/datatables-simple-demo.min.js"></script>
+
+
+	<!-- Simple Datatables JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+	<script src="js/datatables-simple-demo.min.js"></script>
+
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.css" />
+
+	<!-- DataTables JavaScript -->
+	<script type="text/javascript" src="https://cdn.datatables.net/v/bs5/dt-1.11.3/datatables.min.js"></script>
+
+	<!-- DataTables Buttons CSS -->
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.0.1/css/buttons.dataTables.min.css" />
+
+	<!-- DataTables Buttons JavaScript -->
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/dataTables.buttons.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.html5.min.js"></script>
+	<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.0.1/js/buttons.print.min.js"></script>
+
+	<!-- Supporting libraries for DataTables Buttons -->
+	<%--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.6.0/jszip.min.js"></script>--%>
+	<%--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.2/pdfmake.min.js"></script>--%>
+	<%--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.2/vfs_fonts.js"></script>--%>
+</body>
+</html>

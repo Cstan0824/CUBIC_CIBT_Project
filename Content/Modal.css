@@ -1,0 +1,92 @@
+﻿.Modal-Error-Cubic{
+    /*color: #721c24;*/
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.Modal-Error-Cubic .modal-title {
+    color: #721c24;
+}
+
+.Modal-Confirmation-Cubic{
+    /*color: #004085;*/
+    background-color: #cce5ff;
+    border-color: #b8daff;
+}
+
+.Modal-Confirmation-Cubic .modal-title{
+    color: #004085;
+}
+
+.Modal-Information-Cubic{
+    /*color: #856404;*/
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+
+.Modal-Information-Cubic .modal-title{
+    color: #856404;
+}
+
+.Modal-Success-Cubic {
+    background-color: #A6F0CE;
+    border-color: #C4FFE4;
+}
+
+.btn-save {
+    background-color: #00A8B0;
+    border-color: #00A8B0;
+    border-style: solid;
+    height: 40px;
+    width: 150px;
+    color: #FFFFFF;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 15px;
+    float:right;
+}
+
+.btn-save-double {
+    background-color: #FFFFFF;
+    color: #00A8B0;
+    border-radius:5px;
+    border-style:solid;
+    font-size: 14px;
+    font-weight: 600;
+    width: 150px;
+    height: 40px;
+    border-color: #00A8B0;
+    border-style: solid;
+    float: right;
+}
+
+.btn-cancel {
+    background-color: #c82333;
+    color: white;
+    border-color: #c82333;
+    border-style: solid;
+    height: 40px;
+    width: 150px;
+    color: #FFFFFF;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 15px;
+    float:right;
+}
+
+.btn-clear {
+    background-color: #0061F2;
+    color: white;
+    border-color: #0061F2;
+    border-style: solid;
+    height: 40px;
+    width: 150px;
+    color: #FFFFFF;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: 15px;
+    float:right;
+}

@@ -1,0 +1,279 @@
+﻿
+/* Align button to middle of textbox */
+.align-search-button {
+    display: flex;
+    align-items: center;
+    padding-top: 1.5rem;
+}
+
+
+/* Card Customize */
+.card-header-cubic {
+    padding: 5px;
+    font-size: 12px;
+    height: 30px;
+}
+
+.card-body-cubic {
+    padding: 5px;
+    font-size: 12px;
+    height: 45px;
+}
+
+.card-text-cubic {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    height: 45px;
+}
+
+.Modal-Error-cubic{
+
+}
+
+.Modal-Confirmation-cubic {
+}
+
+.Modal-Information-cubic {
+}
+
+
+/* Check Box */
+.checkbox-container-cubic {
+    margin-bottom: 2px;
+}
+
+.checkbox-spacing-cubic {
+    margin-right: 15px; /* Adjust the margin as desired */
+}
+
+/* Customize for input form */
+
+
+
+
+.input-label-cubic-12 {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    color: black;
+}
+
+.input-label-cubic-14 {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    color: black;
+}
+
+.input-label-cubic-16 {
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    color:black;
+}
+
+.input-label-cubic-18 {
+    font-size: 18px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    color: black;
+}
+
+.input-text-cubic-12 {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+    color: black;
+}
+
+.input-text-cubic-14 {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+    color: black;
+}
+
+.input-text-cubic-16 {
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+    color: black;
+}
+
+.input-textbox-cubic-12 {
+    font-size: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+}
+
+.input-textbox-cubic-14 {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+}
+
+.input-textbox-cubic-16 {
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+}
+
+/* DropDown List*/
+.drop-down-cubic-14 {
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+/*    border-color: lightgrey;
+    border: 1px solid;*/
+}
+
+.drop-down-cubic-16 {
+    border: 1px solid;
+    font-size: 16px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-width: 140px;
+    padding-top: 9px;
+}
+
+.input-checkbox-cubic-14 {
+    border: 0px solid;
+    font-size: 14px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 10px;
+}
+
+
+/*Radio Button*/
+.input-radio-cubic-20 {
+    display: flex;
+    align-items: center;
+}
+
+.input-radio-cubic-20 input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 0;
+    margin-right: 1px;
+    vertical-align: middle;
+}
+
+.input-radio-cubic-20 label {
+    margin-left: 10px;
+    line-height: 20px; /* Adjust this if needed */
+}
+
+.input-radio-cubic-20 td {
+    padding-right: 15px; /* adjust this value as per your needs */
+}
+
+.page-label-cubic-12 {
+    font-size: 12px;
+    padding-top: 15px;
+    border: 0px solid;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.page-label-cubic-14 {
+    font-size: 14px;
+    padding-top: 15px;
+    border: 0px solid;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.page-label-cubic-16 {
+    font-size: 16px;
+    padding-top: 15px;
+    border: 0px solid;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* TABLE Control */
+/* Add a Add Button into Table */
+.add-button-table {
+    background-color: #00A8B0; /* change to your preferred color */
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+.delete-button-table {
+    background-color: #e81500; /* change to your preferred color */
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 12px;
+}
+
+    .add-button-table:hover {
+        background-color: #45a049; /* change to your preferred color on hover */
+        color: white;
+    }
+
+    .row-margin-btm-cubic{
+        margin-bottom:0.5rem;
+    }
+
+/* Circle Button */
+.status-circle-cubic-16 {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.status-circle-cubic-24 {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.status-circle-cubic-32 {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.img-clearance-cubic-24 {
+    width: 24px;
+    height: 24px;
+}
+
+.img-clearance-cubic-36 {
+    width: 36px;
+    height: 36px;
+}
+
+.page-heading-cubic {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 500;
+    color: #4654DF;
+}
