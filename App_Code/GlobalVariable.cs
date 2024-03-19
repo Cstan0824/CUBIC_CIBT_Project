@@ -76,20 +76,45 @@ namespace CUBIC_CIBT_Project
 				"</script>");
 			_Page.ClientScript.RegisterClientScriptBlock(_Type, "alert", sb.ToString());
 		}
-		public static void GF_ClearInputFeild(Control control)
+		public static void GF_ClearInputFeild(Control _control)
 		{
-			control.Controls.OfType<TextBox>().ToList().ForEach(txtBox => txtBox.Text = string.Empty);
-			control.Controls.OfType<Control>().Where(c => c.Controls.Count > 0).ToList().ForEach(child => GF_ClearInputFeild(child));
+			_control.Controls.OfType<TextBox>().ToList().ForEach(txtBox => txtBox.Text = string.Empty);
+			_control.Controls.OfType<Control>().Where(c => c.Controls.Count > 0).ToList().ForEach(child => GF_ClearInputFeild(child));
 		}
 
-		public static void GF_DrpListAddDefaultItem(DropDownList droplist)
+		public static void GF_DrpListAddDefaultItem(DropDownList _droplist)
 		{
-			droplist.Items.Add(new ListItem("--Select One--", ""));
+			_droplist.Items.Add(new ListItem("--Select One--", ""));
 		}
 
-		public static void GF_ClearItem(DropDownList droplist)
+		public static void GF_ClearItem(DropDownList _droplist)
 		{
-			droplist.Items.Clear();
+			_droplist.Items.Clear();
+		}
+
+		public static void GF_GetRunningNumber(string _tempBU,string _tempPrefix)
+		{
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
+			try
+			{
+				string SqlSelectCommand = $"SELECT T_SYS_NEXT1 FROM [dbo].[SYSRUN_BU] WHERE T_SYS_PREFIX = {_tempPrefix} AND T_SYS_BU = {_tempBU}";
+				SqlCommand SqlCmd = new SqlCommand(SqlSelectCommand,Conn);
+			}
+			catch(Exception ex)
+			{
+				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "GF_DrpListAddDefaultItem", ex.ToString().Replace("'", ""));
+			}
+			finally
+			{
+
+			}
+			GF_UpdateRunningNumber(_tempBU, _tempPrefix);
+		}
+		public static void GF_UpdateRunningNumber(string _tempBU, string _tempPrefix)
+		{
+
 		}
 	}
 }
