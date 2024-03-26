@@ -15,6 +15,15 @@ namespace CUBIC_CIBT_Project
 	{
 
 		/// <summary>
+		/// E_AccessC control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.HtmlControls.HtmlGenericControl E_AccessC;
+
+		/// <summary>
 		/// ScriptManagerMain control.
 		/// </summary>
 		/// <remarks>

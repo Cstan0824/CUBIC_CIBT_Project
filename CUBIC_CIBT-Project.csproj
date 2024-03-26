@@ -231,7 +231,6 @@
     <Content Include="FrmLogin.aspx" />
     <Content Include="FrmProjectListing.aspx" />
     <Content Include="FrmProjectMaintenance.aspx" />
-    <Content Include="FrmSupplierMaintenance.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Image\avatar.png" />
     <Content Include="Image\avatar2.png" />
@@ -460,13 +459,6 @@
     </Compile>
     <Compile Include="FrmProjectMaintenance.aspx.designer.cs">
       <DependentUpon>FrmProjectMaintenance.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="FrmSupplierMaintenance.aspx.cs">
-      <DependentUpon>FrmSupplierMaintenance.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="FrmSupplierMaintenance.aspx.designer.cs">
-      <DependentUpon>FrmSupplierMaintenance.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

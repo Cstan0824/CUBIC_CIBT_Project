@@ -8,14 +8,25 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using static CUBIC_CIBT_Project.GlobalVariable;
 using OfficeOpenXml;
-using System.Data.SqlClient;
+using System.Data.SqlDoc;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
+using static CUBIC_CIBT_Project.GlobalProjectClass;
+using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
 namespace CUBIC_CIBT_Project
 {
 	public partial class FrmDocumentMaintenance : System.Web.UI.Page
 	{
 		protected void Page_Load(object sender, EventArgs e)
 		{
+			if (!Page.IsPostBack)
+			{
+				UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+				Dictionary<string, HtmlGenericControl> Access = new Dictionary<string, HtmlGenericControl>()
+				{ ["E_DocM"] = E_DocM, ["V_DocM"] = V_DocM };
+				GF_DisplayWithAccessibility(userDetails.User_Access, Access);
+			}
 			DataTable dt = new DataTable();
 			DocMRepeater.DataSource = dt;
 			DocMRepeater.DataBind();

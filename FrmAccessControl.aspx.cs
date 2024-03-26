@@ -10,50 +10,33 @@ using static CUBIC_CIBT_Project.GlobalVariable;
 using System.Text;
 using System.Data.SqlTypes;
 using System.Web.UI.WebControls.WebParts;
+using Newtonsoft.Json;
+using static CUBIC_CIBT_Project.GlobalProjectClass;
+using System.Web.UI.HtmlControls;
 
 namespace CUBIC_CIBT_Project
 {
 	public partial class FrmAccessControl : Page
 	{
-		StringBuilder TempCombineEditAccess = new StringBuilder();
-		StringBuilder TempCombineViewAccess = new StringBuilder();
+		//List<string> Accessibility = new List<string>();
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			if (!Page.IsPostBack)
 			{
-				ChkEditAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
-				ChkViewAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
-				ChkViewAccessReport.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
+				UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+				Dictionary<string, HtmlGenericControl> Access = new Dictionary<string, HtmlGenericControl>()
+				{ ["E_AccessC"] = E_AccessC };
+				GF_DisplayWithAccessibility(userDetails.User_Access, Access);
+
+				List<CheckBoxList> chkBoxList = new List<CheckBoxList>()
+				{  ChkEditAccessMaintenance, ChkViewAccessReport, ChkViewAccessMaintenance };
+				chkBoxList.ForEach(chkList => chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true));
 			}
-			
 		}
 
 		protected void ConfirmBtnCreate_Click(object sender, EventArgs e)
 		{
-			// Append Edit Access use one-many table instead
-			TempCombineEditAccess.Append
-				(
-				string.Join(
-				",",
-				ChkEditAccessMaintenance.Items.Cast<ListItem>()
-				.Concat(ChkEditAccessAdmin.Items.Cast<ListItem>())
-				)
-				);
-
-			// Append View Access
-			TempCombineViewAccess.Append(string.Join(",", ChkViewAccessMaintenance.Items.Cast<ListItem>()));
-
-
-			if (TempCombineEditAccess.Length > 0)
-			{
-				TempCombineEditAccess.Length--;
-			}
-			if (TempCombineViewAccess.Length > 0)
-			{
-				TempCombineViewAccess.Length--;
-			}
-
-			if (ddlEmpMode.SelectedValue != "C")
+			if (ddlEmpMode.SelectedValue == "C")
 			{
 				F_CreateEmp();
 			}
@@ -102,12 +85,10 @@ namespace CUBIC_CIBT_Project
 			Control myControl = Page.Master.FindControl("form1");
 			var SetReadOnly = (ddlEmpMode.SelectedValue == "") ? true : false;
 
-			List<TextBox> TxtList = new List<TextBox>() { txtEmpUsername,txtPassword };
+			List<TextBox> TxtList = new List<TextBox>() { txtEmpUsername, txtPassword };
 
 			//Set ReadOnly
 			TxtList.ForEach(txt => txt.ReadOnly= SetReadOnly);
-			//myControl.Controls.OfType<TextBox>().ToList().ForEach(txtBox => txtBox.Text = string.Empty);
-			//passing the action to inside of ForEach to GF_EmptyInputFeild > GF_InputFeild
 
 			//Set Visble
 			btnGeneratePassword.Visible = !SetReadOnly;
@@ -120,7 +101,16 @@ namespace CUBIC_CIBT_Project
 			//Reset input feild
 			if(SetReadOnly) GF_ClearInputFeild(myControl);
 
-
+			//Display current employees ID
+			if (SetVisible)
+			{
+				GF_DrpListAddDefaultItem(EmpIDDrpList);
+				F_PopulateEmp();
+			}
+			else
+			{
+				GF_ClearItem(EmpIDDrpList);
+			}
 		}
 		protected void btnGeneratePassword_Click(object sender, EventArgs e) 
 		{
@@ -167,27 +157,20 @@ namespace CUBIC_CIBT_Project
 		private void F_SetAllChkBtn(bool SetCheck)
 		{
 			//Page.Master.FindControl("form1")?.Controls.OfType<CheckBoxList>().ToList().ForEach(chkList => chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck));
-			ChkEditAccessAdmin.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck);
-			ChkEditAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck);
-			ChkViewAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck);
-			ChkViewAccessReport.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck);
-			ChkViewAccessAdmin.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck);
+			List<CheckBoxList> chkBoxList = new List<CheckBoxList>() 
+			{ ChkEditAccessAdmin, ChkEditAccessMaintenance, ChkViewAccessAdmin, ChkViewAccessReport, ChkViewAccessMaintenance };
+			chkBoxList.ForEach(chkList=>chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck));
 		}
 		private void F_UploadEmpDetails()
 		{
-			SqlConnection conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(conn);
-			conn.Open();
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
 			try
 			{
 				//Create a one to many relation table
-				string SQLSelectCommand = "UPDATE Emp_Table SET (Emp_name,Emp_Access) = (" +
-					txtEmpUsername.Text +
-					"," + 
-					TempCombineEditAccess +
-					TempCombineEditAccess + 
-					")";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, conn);
+				string SQLSelectCommand = "UPDATE T_EMPLOYEE SET (EMP_USERNAME,EMP_MODIFIED_DATE,EMP_MODIFIED_BY)";
+				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
 				SQLcmd.ExecuteNonQuery();
 			}
 			catch (Exception ex)
@@ -197,19 +180,23 @@ namespace CUBIC_CIBT_Project
 			}
 			finally
 			{
-				conn.Dispose();
-				conn.Close();
+				Conn.Dispose();
+				Conn.Close();
 			}
 		}
+		//Debug
 		private void F_CreateEmp()
 		{
-			SqlConnection conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(conn);
-			conn.Open();
+			UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+			string EmpNO = F_GenerateEmpID(userDetails.User_BU, "EMP");
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
 			try
 			{
-				string SQLSelectCommand = "INSERT INTO Emp_Table() VALUES();";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, conn);
+				string SQLInsertCommand = "INSERT INTO T_EMPLOYEE()";
+				SQLInsertCommand += $"VALUES('{EmpNO}',);";
+				SqlCommand SQLcmd = new SqlCommand(SQLInsertCommand, Conn);
 				SQLcmd.ExecuteNonQuery();
 			}
 			catch (Exception ex)
@@ -219,19 +206,25 @@ namespace CUBIC_CIBT_Project
 			}
 			finally
 			{
-				conn.Dispose();
-				conn.Close();
+				Conn.Dispose();
+				Conn.Close();
 			}
 		}
+		//Debug
 		protected void btnCreate_Click(object sender, EventArgs e)
 		{
-			SqlConnection conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(conn);
-			conn.Open();
+			//check if the check box is not all empty
+			if (txtPassword.Text == string.Empty || txtEmpUsername.Text == string.Empty || ddlEmpMode.SelectedValue == "")
+			{
+				DirectTarget.Attributes["data-bs-target"] = "#ErrorModalMessage";
+			}
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
 			try
 			{
-				string SQLSelectCommand = "SELECT Emp_id FROM Emp_Table;";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, conn);
+				string SQLSelectCommand = $"SELECT EMP_NO FROM [T_EMPLOYEE] WHERE [EMP_NO]='{txtEmpUsername}';";
+				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
 				SqlDataReader DataReader = SQLcmd.ExecuteReader();
 				if (!DataReader.HasRows)
 				{
@@ -251,8 +244,8 @@ namespace CUBIC_CIBT_Project
 			}
 			finally
 			{
-				conn.Dispose();
-				conn.Close();
+				Conn.Dispose();
+				Conn.Close();
 			}
 		}
 
@@ -260,5 +253,80 @@ namespace CUBIC_CIBT_Project
         {
 
         }
-    }
+
+		private void F_PopulateEmp()
+		{
+			UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
+			try
+			{
+				string SQLSelectCommand = $"SELECT [EMP_NO] FROM [T_EMPLOYEE] WHERE [EMP_NO] <> {userDetails.User_Login};";
+				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
+				SqlDataReader DataReader = SQLcmd.ExecuteReader();
+				if (!DataReader.HasRows)
+				{
+					GF_ReturnErrorMessage("No Employee Found", this.Page, this.GetType());
+					return;
+				}
+				while (DataReader.Read())
+				{
+					EmpIDDrpList.Items.Add(new ListItem(DataReader["EMP_NO"]?.ToString(), DataReader["EMP_NO"]?.ToString()));
+				}
+			}
+			catch (Exception ex)
+			{
+				GF_ReturnErrorMessage("Failed to Populate Employee", this.Page, this.GetType());
+				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "CreateEmp", ex.ToString());
+			}
+			finally
+			{
+				Conn.Dispose();
+				Conn.Close();
+			}
+		}
+
+		private string F_GenerateEmpID(string _tempBU,string _tempPrefix)
+		{
+			return _tempPrefix + GF_GetRunningNumber(_tempBU, _tempPrefix).ToString().PadLeft(8, '0');
+		}
+
+		protected void EmpIDDrpList_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			//SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			//GF_CheckConnectionStatus(Conn);
+			//Conn.Open();
+			//try
+			//{
+			//	string SQLSelectCommand = $"SELECT [EMP_USERNAME] FROM [T_EMPLOYEE] WHERE [EMP_NO] = '{EmpIDDrpList.SelectedValue}';";
+			//	SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
+			//	SqlDataReader DataReader = SQLcmd.ExecuteReader();
+			//	if (!DataReader.HasRows)
+			//	{
+			//		GF_ReturnErrorMessage("No Employee Found", this.Page, this.GetType());
+			//		return;
+			//	}
+			//	DataReader.Read();
+			//	txtEmpUsername.Text = DataReader["EMP_USERNAME"]?.ToString();
+			//}
+			//catch (Exception ex)
+			//{
+			//	GF_ReturnErrorMessage("Failed to Populate Employee", this.Page, this.GetType());
+			//	GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "CreateEmp", ex.ToString());
+			//}
+			//finally
+			//{
+			//	Conn.Dispose();
+			//	Conn.Close();
+			//}
+		}
+
+		
+	}
 }
+
+
+//myControl.Controls.OfType<TextBox>().ToList().ForEach(txtBox => txtBox.Text = string.Empty);
+//passing the action to inside of ForEach to GF_EmptyInputFeild > GF_InputFeild

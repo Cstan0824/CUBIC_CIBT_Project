@@ -85,7 +85,7 @@
 	<asp:UpdatePanel ID="UpdatePanelLotInfor" runat="server">
 		<ContentTemplate>
 			<%--    This is another new design template--%>
-			<div class="container-fluid">
+			<div class="container-fluid" runat="server" ID="V_ProjR">
 				<%-- Datagrid--%>
 				<!-- Page Heading --For Container untill card body-->
 				<h1 class="h3 mb-2 text-gray-800"></h1>
@@ -216,6 +216,7 @@
 						</div>
 					</div>
 				</div>
+			</div>
 		</ContentTemplate>
 	</asp:UpdatePanel>
 

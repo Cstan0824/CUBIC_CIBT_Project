@@ -33,6 +33,15 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.UpdatePanel UpdatePanelLotInfor;
 
 		/// <summary>
+		/// E_ClientM control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.HtmlControls.HtmlGenericControl E_ClientM;
+
+		/// <summary>
 		/// ValidationSummary1 control.
 		/// </summary>
 		/// <remarks>
@@ -184,6 +193,15 @@ namespace CUBIC_CIBT_Project
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.TextBox txtRunningNo;
+
+		/// <summary>
+		/// V_ClientM control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.HtmlControls.HtmlGenericControl V_ClientM;
 
 		/// <summary>
 		/// DocMRepeater control.

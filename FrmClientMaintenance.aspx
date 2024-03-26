@@ -84,8 +84,7 @@
     <asp:ScriptManager ID="ScriptManagerMain" runat="server"></asp:ScriptManager>
 	<asp:UpdatePanel ID="UpdatePanelLotInfor" runat="server">
 		<ContentTemplate>
-			<%--    This is another new design template--%>
-			<div class="container-fluid">
+			<div class="container-fluid" runat="server" ID="E_ClientM">
 				<!-- Page Heading --For Container untill card body-->
 				<h1 class="h3 mb-2 text-gray-800"></h1>
 				<p class="mb-4"></p>
@@ -169,7 +168,7 @@
 
 					</div>
 				</div>
-
+				</div>
 
 				<hr class="cssContentHeaderLine" />
 				<%-- Datagrid--%>
@@ -179,7 +178,7 @@
 				<p class="mb-4"></p>
 
 				<!-- DataTales Example -->
-				<div class="card shadow mb-4">
+				<div class="card shadow mb-4" runat="server" ID="V_ClientM">
 					<div class="card-header py-3">
 						<h6 class="m-0 page-heading-cubic"><i class="fa fa-file"></i>&nbsp;&nbsp;Client Table</h6>
 					</div>
@@ -303,7 +302,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+
 		</ContentTemplate>
 	</asp:UpdatePanel>
 

@@ -85,7 +85,7 @@
 	<asp:UpdatePanel ID="UpdatePanelLotInfor" runat="server">
 		<ContentTemplate>
 			<%--    This is another new design template--%>
-			<div class="container-fluid">
+			<div class="container-fluid" runat="server" ID="E_ProjM">
 				<!-- Page Heading --For Container untill card body-->
 				<h1 class="h3 mb-2 text-gray-800"></h1>
 				<p class="mb-4"></p>
@@ -180,13 +180,13 @@
 						<%-- row Save--%>
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-6">
-</div>
+							</div>
 							<div class="form-group col-md-6">
 								<a data-bs-toggle="modal" runat="server" ID="DirectTarget" data-bs-target="#ModalConfirmation" data-bs-backdrop="static">
 									<asp:Button ID="BtnSave" runat="server" class="btn-save" Text="Save" OnClick="BtnSave_Click"></asp:Button>
 								</a>
 							</div>
-					
+
 						</div>
 						<%--  Submit button row row-margin-btm-cubic--%>
 						<div class="row row-margin-btm-cubic">
@@ -202,44 +202,45 @@
 
 					</div>
 				</div>
-				<!-- Modal-->
-				<!-- Confirmation Modal-->
-				<div class="modal fade" id="ModalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header Modal-Confirmation-Cubic">
-								<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
-								<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-							<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
-							<div class="modal-footer">
-								<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
-								<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
-								<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
-							</div>
+			</div>
+			<!-- Modal-->
+			<!-- Confirmation Modal-->
+			<div class="modal fade" id="ModalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header Modal-Confirmation-Cubic">
+							<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
+							<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+						<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
+						<div class="modal-footer">
+							<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
+							<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
+							<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
 						</div>
 					</div>
 				</div>
-				<!-- Fail Message Modal -->
-				<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header Modal-Error-Cubic">
-								<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
-								<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-									<span aria-hidden="true">x</span>
-								</button>
-							</div>
-							<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
-							<div class="modal-footer">
-								<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
-							</div>
+			</div>
+			<!-- Fail Message Modal -->
+			<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header Modal-Error-Cubic">
+							<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
+							<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+								<span aria-hidden="true">x</span>
+							</button>
+						</div>
+						<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
+						<div class="modal-footer">
+							<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
 						</div>
 					</div>
 				</div>
-				<%-- Error --%>
+			</div>
+			<%-- Error --%>
 		</ContentTemplate>
 	</asp:UpdatePanel>
 

@@ -85,7 +85,7 @@
 	<asp:UpdatePanel ID="UpdatePanelLotInfor" runat="server">
 		<ContentTemplate>
 			<%--    This is another new design template--%>
-			<div class="container-fluid">
+			<div class="container-fluid" runat="server" ID="E_InvM">
 				<!-- Page Heading --For Container untill card body-->
 				<h1 class="h3 mb-2 text-gray-800"></h1>
 				<p class="mb-4"></p>
@@ -143,7 +143,7 @@
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblFileUpload" runat="server" Text="Invoice File Upload(Only Exel File):" Visible="false" class="input-label-cubic"></asp:Label>
-								<asp:FileUpload ID="ChooseFileUpload" runat="server" Visible="false"/>
+								<asp:FileUpload ID="ChooseFileUpload" runat="server" Visible="false" />
 							</div>
 							<div class="form-group col-md-2">
 								<asp:RegularExpressionValidator ID="FileUploadValidator" runat="server" ControlToValidate="ChooseFileUpload"
@@ -156,14 +156,14 @@
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblPaidAmount" runat="server" Text="Paid Amount" class="input-label-cubic"></asp:Label>
-								<asp:TextBox ID="txtPaidAmount" placeholder="Paid Amount" runat="server" ReadOnly="true" class="form-control input-textbox-cubic-16" ></asp:TextBox>
+								<asp:TextBox ID="txtPaidAmount" placeholder="Paid Amount" runat="server" ReadOnly="true" class="form-control input-textbox-cubic-16"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
 								<asp:RequiredFieldValidator ID="RequiredFieldValidatorPaidAmount" runat="server" ControlToValidate="txtPaidAmount" ErrorMessage="Please Enter Paid Amount" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblBalanceAmount" runat="server" Text="Balance Amount" class="input-label-cubic"></asp:Label>
-								<asp:TextBox ID="txtBalanceAmount" placeholder="Balance Amount" runat="server" class="form-control input-textbox-cubic-16" ReadOnly="true" ></asp:TextBox>
+								<asp:TextBox ID="txtBalanceAmount" placeholder="Balance Amount" runat="server" class="form-control input-textbox-cubic-16" ReadOnly="true"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
 								<asp:RequiredFieldValidator ID="RequiredFieldValidatorBalanceAmount" runat="server" ControlToValidate="txtBalanceAmount" ErrorMessage="Please Enter Balance Amount" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
@@ -177,7 +177,7 @@
 								<asp:TextBox ID="txtPONo" runat="server" class="form-control input-textbox-cubic-16" ReadOnly="true" placeholder="PO Number" CssClass="form-control"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:RequiredFieldValidator ID="RequiredFieldValidatorPONo"  runat="server" ControlToValidate="txtPONo" ErrorMessage="Please Enter PO Number" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
+								<asp:RequiredFieldValidator ID="RequiredFieldValidatorPONo" runat="server" ControlToValidate="txtPONo" ErrorMessage="Please Enter PO Number" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblPOAmount" runat="server" Text="PO Amount" class="input-label-cubic"></asp:Label>
@@ -201,7 +201,7 @@
 								<asp:Label ID="lblProjectCodeTxt" runat="server" Text="Project Code" class="input-label-cubic"></asp:Label>
 								<asp:DropDownList ID="DrpListProjectCode" runat="server" AutoPostBack="true" class="form-control" ValidateRequestMode="Enabled" BackColor="white" Style="border: 1px solid; font-size: 16px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 140px;">
 								</asp:DropDownList>
-								
+
 							</div>
 							<div class="form-group col-md-2">
 								<asp:CompareValidator ID="CompareValidator3" runat="server" Operator="Equal" ControlToValidate="DrpListProjectCode" ValueToCompare="" Errormessage="Please select a Project" ForeColor="Red" BorderStyle="None" Display="Dynamic">*</asp:CompareValidator>
@@ -245,13 +245,13 @@
 						<%-- row Save--%>
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-6">
-</div>
+							</div>
 							<div class="form-group col-md-6">
 								<a data-bs-toggle="modal" runat="server" ID="DirectTarget" data-bs-target="#ModalConfirmation" data-bs-backdrop="static">
 									<asp:Button ID="BtnSave" runat="server" class="btn-save" Text="Save" OnClick="BtnSave_Click"></asp:Button>
 								</a>
 							</div>
-							
+
 
 
 
@@ -271,132 +271,132 @@
 
 					</div>
 				</div>
+			</div>
 
-
-				<hr class="cssContentHeaderLine" />
-				<%-- Datagrid--%>
-
-
-
-
-				<!-- Page Heading --For Container untill card body-->
-				<h1 class="h3 mb-2 text-gray-800"></h1>
-				<p class="mb-4"></p>
-
-				<!-- DataTales Example -->
-				<div class="card shadow mb-4">
-					<div class="card-header py-3">
-						<h6 class="m-0 page-heading-cubic"><i class="fa fa-file"></i>&nbsp;&nbsp;Invoices Table</h6>
-					</div>
-					<div class="card-body">
-
-						<%--    add overflow so that when phone screen can see nicely--%>
-						<%--    <div style="overflow-x: scroll; height:100%; min-width:350px;" >--%>
+			<hr class="cssContentHeaderLine" />
+			<%-- Datagrid--%>
 
 
 
-						<%-- <asp:Timer ID="TimerRefreshList" runat="server" Interval="3000" OnTick="TimerRefreshList_Tick"></asp:Timer>--%>
 
-						<div class="row row-margin-btm-cubic">
-							<div class="col">
-								<div class="col-md-12">
-									<div class="table-responsive">
-										<main>
-											<%--   <div class="card mb-4">
+			<!-- Page Heading --For Container untill card body-->
+			<h1 class="h3 mb-2 text-gray-800"></h1>
+			<p class="mb-4"></p>
+
+			<!-- DataTales Example -->
+			<div class="card shadow mb-4" runat="server" ID="V_InvM">
+				<div class="card-header py-3">
+					<h6 class="m-0 page-heading-cubic"><i class="fa fa-file"></i>&nbsp;&nbsp;Invoices Table</h6>
+				</div>
+				<div class="card-body">
+
+					<%--    add overflow so that when phone screen can see nicely--%>
+					<%--    <div style="overflow-x: scroll; height:100%; min-width:350px;" >--%>
+
+
+
+					<%-- <asp:Timer ID="TimerRefreshList" runat="server" Interval="3000" OnTick="TimerRefreshList_Tick"></asp:Timer>--%>
+
+					<div class="row row-margin-btm-cubic">
+						<div class="col">
+							<div class="col-md-12">
+								<div class="table-responsive">
+									<main>
+										<%--   <div class="card mb-4">
                             <div class="card-header">Employee Master DataTables</div>--%>
-											<div class="card-body">
-												<div style="overflow-x: scroll; height: 100%; min-width: 350px;">
-													<div class="datatable">
-														<div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-															<asp:Repeater ID="DocMRepeater" runat="server">
-																<HeaderTemplate>
-																	<table id="DocMTable" class="table table-bordered table-hover table-striped mydatatable " style="width: 100%">
-																		<thead class="table table-success">
-																			<th>Invoice No.</th>
-																			<th>Invoice Name</th>
-																			<th>Revision No</th>
-																			<th>Status</th>
-																			<th>Modified By</th>
-																			<th>Modified Date</th>
+										<div class="card-body">
+											<div style="overflow-x: scroll; height: 100%; min-width: 350px;">
+												<div class="datatable">
+													<div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+														<asp:Repeater ID="DocMRepeater" runat="server">
+															<HeaderTemplate>
+																<table id="DocMTable" class="table table-bordered table-hover table-striped mydatatable " style="width: 100%">
+																	<thead class="table table-success">
+																		<th>Invoice No.</th>
+																		<th>Invoice Name</th>
+																		<th>Revision No</th>
+																		<th>Status</th>
+																		<th>Modified By</th>
+																		<th>Modified Date</th>
 
-																		</thead>
-																</HeaderTemplate>
+																	</thead>
+															</HeaderTemplate>
 
-																<ItemTemplate>
-																	<tr>
-																		<%--<td><%#Eval("DOC_CODE") %></td>
+															<ItemTemplate>
+																<tr>
+																	<%--<td><%#Eval("DOC_CODE") %></td>
 																		<td><%#Eval("DOC_NAME") %></td>
 																		<td><%#Eval("REVISION_NO") %></td>
 																		<td><%#Eval("DOC_STATUS") %></td>
 																		<td><%#Eval("MODIFIED_BY") %></td>
 																		<td><%#Eval("MODIFIED_DATE") %></td>--%>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																</ItemTemplate>
-																<FooterTemplate>
-																	</table>
-																</FooterTemplate>
-															</asp:Repeater>
-														</div>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																	<td></td>
+																</tr>
+															</ItemTemplate>
+															<FooterTemplate>
+																</table>
+															</FooterTemplate>
+														</asp:Repeater>
 													</div>
-
 												</div>
+
 											</div>
-											<%-- </div>--%>
-										</main>
-										<%--   <br />--%>
-									</div>
+										</div>
+										<%-- </div>--%>
+									</main>
+									<%--   <br />--%>
 								</div>
 							</div>
-
-							<!-- Modal-->
-							<!-- Confirmation Modal-->
-							<div class="modal fade" id="ModalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="Invoice">
-									<div class="modal-content">
-										<div class="modal-header Modal-Confirmation-Cubic">
-											<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">×</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
-											<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
-											<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Fail Message Modal -->
-							<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="Invoice">
-									<div class="modal-content">
-										<div class="modal-header Modal-Error-Cubic">
-											<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">x</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<%-- Error --%>
 						</div>
+
+						<!-- Modal-->
+						<!-- Confirmation Modal-->
+						<div class="modal fade" id="ModalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="Invoice">
+								<div class="modal-content">
+									<div class="modal-header Modal-Confirmation-Cubic">
+										<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
+										<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
+									<div class="modal-footer">
+										<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
+										<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
+										<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Fail Message Modal -->
+						<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="Invoice">
+								<div class="modal-content">
+									<div class="modal-header Modal-Error-Cubic">
+										<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
+										<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+											<span aria-hidden="true">x</span>
+										</button>
+									</div>
+									<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
+									<div class="modal-footer">
+										<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<%-- Error --%>
 					</div>
 				</div>
+			</div>
 		</ContentTemplate>
 	</asp:UpdatePanel>
 

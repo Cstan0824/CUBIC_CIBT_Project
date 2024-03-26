@@ -33,76 +33,67 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.Label lblLoginNameTopNav;
 
 		/// <summary>
-		/// HPLinkFrmAccessControl control.
+		/// HPFrmAccessControl control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPLinkFrmAccessControl;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmAccessControl;
 
 		/// <summary>
-		/// HyperLink2 control.
+		/// HPFrmClientMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HyperLink2;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmClientMaint;
 
 		/// <summary>
-		/// HyperLink1 control.
+		/// HPFrmProjMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HyperLink1;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmProjMaint;
 
 		/// <summary>
-		/// HyperLink3 control.
+		/// HPFrmDocumentMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HyperLink3;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmDocumentMaint;
 
 		/// <summary>
-		/// HPDocumentM control.
+		/// HPFrmBankStateMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPDocumentM;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmBankStateMaint;
 
 		/// <summary>
-		/// HPCalendar control.
+		/// HPFrmInvMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPCalendar;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmInvMaint;
 
 		/// <summary>
-		/// HPMMaterial control.
+		/// HPFrmProjReport control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPMMaterial;
-
-		/// <summary>
-		/// HyperLink4 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HyperLink4;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmProjReport;
 
 		/// <summary>
 		/// lblLoginNameSideNav control.

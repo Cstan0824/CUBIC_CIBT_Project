@@ -78,7 +78,7 @@
 	&nbsp;
      
     <%--    This is another new design template--%>
-	<div class="container-fluid">
+	<div class="container-fluid" runat="server" ID="E_AccessC">
 		<!-- Page Heading --For Container untill card body-->
 		<h1 class="h3 mb-2 text-gray-800"></h1>
 		<p class="mb-4"></p>
@@ -120,7 +120,7 @@
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-4" style="border: 0px solid">
 								<asp:Label ID="lblEmpIDtxt" runat="server" Text="Employee ID" class="input-label-cubic" Visible="false"></asp:Label>
-								<asp:DropDownList ID="EmpIDDrpList" runat="server" AutoPostBack="true" class="form-control" ValidateRequestMode="Enabled" BackColor="white" style="border: #C5CCD6 1px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 140px;" Visible="false">
+								<asp:DropDownList ID="EmpIDDrpList" runat="server" AutoPostBack="true" class="form-control" ValidateRequestMode="Enabled" BackColor="white" style="border: #C5CCD6 1px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-width: 140px;" Visible="false" OnSelectedIndexChanged="EmpIDDrpList_SelectedIndexChanged">
 									<asp:ListItem Value="">--Select One--</asp:ListItem>
 								</asp:DropDownList>
 							</div>
@@ -208,10 +208,9 @@
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="form-group col-md-12" style="border: 0px solid;">
 										<asp:CheckBoxList ID="ChkEditAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkEditAccessAdmin_SelectedIndexChanged">
-											<asp:ListItem>Access Control</asp:ListItem>
-											<asp:ListItem>Client Maintenance</asp:ListItem>
-											<asp:ListItem>Supplier Maintenance</asp:ListItem>
-											<asp:ListItem>Project Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_AccessC">Access Control</asp:ListItem>
+											<asp:ListItem Value="E_ClientM">Client Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_ProjM">Project Maintenance</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -226,9 +225,8 @@
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="form-group col-md-12" style="border: 0px solid;">
 										<asp:CheckBoxList ID="ChkViewAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkViewAccessAdmin_SelectedIndexChanged">
-											<asp:ListItem>Client Maintenance</asp:ListItem>
-											<asp:ListItem>Supplier Maintenance</asp:ListItem>
-											<asp:ListItem>Project Maintenance</asp:ListItem>
+											<asp:ListItem Value="V_ClientM">Client Maintenance</asp:ListItem>
+											<asp:ListItem Value="V_ProjM">Project Maintenance</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -254,9 +252,9 @@
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="col-md-12 checkbox-column form-group" style="border: 0px solid;">
 										<asp:CheckBoxList ID="ChkEditAccessMaintenance" runat="server" class="col-md-6" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="Table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkEditAccessMaintenance_SelectedIndexChanged">
-											<asp:ListItem>Document Maintenance</asp:ListItem>
-											<asp:ListItem>Bank Statement Maintenance</asp:ListItem>
-											<asp:ListItem>Invoice Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_DocM">Document Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_BankStateM">Bank Statement Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_InvM">Invoice Maintenance</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -271,9 +269,9 @@
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="col-md-12 form-group checkbox-column" style="border: 0px solid;">
 										<asp:CheckBoxList ID="ChkViewAccessMaintenance" runat="server" AutoPostBack="True" CssClass="CheckBoxBackgrounds" CellPadding="3" CellSpacing="3" RepeatLayout="Flow" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkViewAccessMaintenance_SelectedIndexChanged">
-											<asp:ListItem>Document Maintenance</asp:ListItem>
-											<asp:ListItem>Bank Statement Maintenance</asp:ListItem>
-											<asp:ListItem>Invoice Maintenance</asp:ListItem>
+											<asp:ListItem Value="V_DocM">Document Maintenance</asp:ListItem>
+											<asp:ListItem Value="V_BankStateM">Bank Statement Maintenance</asp:ListItem>
+											<asp:ListItem Value="V_InvM">Invoice Maintenance</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -299,7 +297,7 @@
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="col-md-12 checkbox-column form-group" style="border: 0px solid;">
 										<asp:CheckBoxList ID="ChkViewAccessReport" runat="server" class="col-md-6" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="Table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px">
-											<asp:ListItem>Project Report</asp:ListItem>
+											<asp:ListItem Value="V_ProjR">Project Report</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
