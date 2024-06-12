@@ -110,8 +110,6 @@
 								<div class="col-md-12">
 									<div class="table-responsive">
 										<main>
-											<%--   <div class="card mb-4">
-                            <div class="card-header">Employee Master DataTables</div>--%>
 											<div class="card-body">
 												<div style="overflow-x: scroll; height: 100%; min-width: 350px;">
 													<div class="datatable">
