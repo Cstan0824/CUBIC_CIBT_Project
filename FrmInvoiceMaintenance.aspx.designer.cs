@@ -69,58 +69,76 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.DropDownList ddlInvoiceMode;
 
 		/// <summary>
-		/// CompareValidator1 control.
+		/// lblProjectCodeTxt control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator1;
+		protected global::System.Web.UI.WebControls.Label lblProjectCodeTxt;
 
 		/// <summary>
-		/// lblInvoiceIDDrpList control.
+		/// DrpListProjectCode control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblInvoiceIDDrpList;
+		protected global::System.Web.UI.WebControls.DropDownList DrpListProjectCode;
 
 		/// <summary>
-		/// DrpListInvoiceID control.
+		/// CompareValidator3 control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListInvoiceID;
+		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator3;
 
 		/// <summary>
-		/// CompareValidator2 control.
+		/// lblRevisionNo control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator2;
+		protected global::System.Web.UI.WebControls.Label lblRevisionNo;
 
 		/// <summary>
-		/// lblStatus control.
+		/// DrpListRevisionNo control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblStatus;
+		protected global::System.Web.UI.WebControls.DropDownList DrpListRevisionNo;
 
 		/// <summary>
-		/// rbStatus control.
+		/// txtRevisionNo control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.RadioButtonList rbStatus;
+		protected global::System.Web.UI.WebControls.TextBox txtRevisionNo;
+
+		/// <summary>
+		/// CompareValidator5 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator5;
+
+		/// <summary>
+		/// RequiredFieldValidator1 control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
 
 		/// <summary>
 		/// lblInvoiceDate control.
@@ -150,33 +168,6 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
 
 		/// <summary>
-		/// lblFileUpload control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblFileUpload;
-
-		/// <summary>
-		/// ChooseFileUpload control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.FileUpload ChooseFileUpload;
-
-		/// <summary>
-		/// FileUploadValidator control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RegularExpressionValidator FileUploadValidator;
-
-		/// <summary>
 		/// lblPaidAmount control.
 		/// </summary>
 		/// <remarks>
@@ -204,256 +195,49 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorPaidAmount;
 
 		/// <summary>
-		/// lblBalanceAmount control.
+		/// lblStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblBalanceAmount;
+		protected global::System.Web.UI.WebControls.Label lblStatus;
 
 		/// <summary>
-		/// txtBalanceAmount control.
+		/// rbStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtBalanceAmount;
+		protected global::System.Web.UI.WebControls.RadioButtonList rbStatus;
 
 		/// <summary>
-		/// RequiredFieldValidatorBalanceAmount control.
+		/// lblFileUpload control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorBalanceAmount;
+		protected global::System.Web.UI.WebControls.Label lblFileUpload;
 
 		/// <summary>
-		/// lblPONo control.
+		/// ChooseFileUpload control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblPONo;
+		protected global::System.Web.UI.WebControls.FileUpload ChooseFileUpload;
 
 		/// <summary>
-		/// txtPONo control.
+		/// FileUploadValidator control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtPONo;
-
-		/// <summary>
-		/// RequiredFieldValidatorPONo control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorPONo;
-
-		/// <summary>
-		/// lblPOAmount control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblPOAmount;
-
-		/// <summary>
-		/// txtPOAmount control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtPOAmount;
-
-		/// <summary>
-		/// RequiredFieldValidatorPOAmount control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorPOAmount;
-
-		/// <summary>
-		/// lblPOFile control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblPOFile;
-
-		/// <summary>
-		/// filePO control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.FileUpload filePO;
-
-		/// <summary>
-		/// lblProjectCodeTxt control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblProjectCodeTxt;
-
-		/// <summary>
-		/// DrpListProjectCode control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListProjectCode;
-
-		/// <summary>
-		/// CompareValidator3 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator3;
-
-		/// <summary>
-		/// lblRemark control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblRemark;
-
-		/// <summary>
-		/// txtRemark control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtRemark;
-
-		/// <summary>
-		/// vRevNo control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator vRevNo;
-
-		/// <summary>
-		/// lblCustomerCodeTxt control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblCustomerCodeTxt;
-
-		/// <summary>
-		/// DrpListCustomerCode control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListCustomerCode;
-
-		/// <summary>
-		/// CompareValidator4 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator4;
-
-		/// <summary>
-		/// lblSupplierCodeTxt control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblSupplierCodeTxt;
-
-		/// <summary>
-		/// DrpListSupplierCode control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListSupplierCode;
-
-		/// <summary>
-		/// CompareValidator5 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator5;
-
-		/// <summary>
-		/// DirectTarget control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.HtmlControls.HtmlAnchor DirectTarget;
-
-		/// <summary>
-		/// BtnSave control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Button BtnSave;
-
-		/// <summary>
-		/// txtAutoNumber control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumber;
-
-		/// <summary>
-		/// txtAutoNumberIncreament control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumberIncreament;
-
-		/// <summary>
-		/// txtRunningNo control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtRunningNo;
+		protected global::System.Web.UI.WebControls.RegularExpressionValidator FileUploadValidator;
 
 		/// <summary>
 		/// V_InvM control.
@@ -465,13 +249,13 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.HtmlControls.HtmlGenericControl V_InvM;
 
 		/// <summary>
-		/// DocMRepeater control.
+		/// INVMRepeater control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Repeater DocMRepeater;
+		protected global::System.Web.UI.WebControls.Repeater INVMRepeater;
 
 		/// <summary>
 		/// BtnConfirmSave control.

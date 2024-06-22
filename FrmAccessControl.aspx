@@ -43,14 +43,13 @@
 		}
 	</style>
 	<script>
-
 		document.title = "Admin Access Form";
 
 		function closeModal() {
-			$("#ModalMessage").hide();
-			$('#ErrorModalMessage').hide();
-			$('#ConfirmationModalMessage').hide();
-			$('#ModalConfirmation').hide();
+			$('#ModalMessage').modal('hide');
+			$('#ErrorModalMessage').modal('hide');
+			$('#ConfirmationModalMessage').modal('hide');
+			$('#ModalConfirmation').modal('hide');
 			$('.modal-backdrop').remove();
 			$(document.body).removeClass('modal-open');
 			document.body.style.overflow = "scroll";
@@ -73,12 +72,63 @@
 			content.innerHTML = message;
 			$("#ErrorModalMessage").modal('show');
 		}
+
+		function validation() {
+			// Drop List Field
+			var ddlEmpMode = $('#<%= ddlEmpMode.ClientID %>').val();
+			var DrpListEmpID = $('#<%= EmpIDDrpList.ClientID %>').val();
+
+			// Text Field
+			var Username = $('#<%= txtEmpUsername.ClientID %>').val();
+			var Password = $('#<%= txtPassword.ClientID %>').val();
+
+			// Validate Employee Mode
+			if (!ddlEmpMode || ddlEmpMode.trim() === "") {
+				showErrorModal('Failed', 'Please select the mode.');
+				return;
+			}
+
+			// Validate Employee ID (only in Update Mode)
+			if (ddlEmpMode === "U" && (!DrpListEmpID || DrpListEmpID.trim() === "")) {
+				showErrorModal('Failed', 'Please select the Employee ID.');
+				return;
+			}
+
+			// Validate Username
+			if (!Username || Username.trim() === "") {
+				showErrorModal('Failed', 'Please enter the Employee Username.');
+				return;
+			}
+
+			// Validate Password (only in Create mode)
+			if (ddlEmpMode === "C" && (!Password || Password.trim() === "")) {
+				showErrorModal('Failed', 'Please enter the Employee password.');
+				return;
+			}
+
+			//Validate Username length
+			if (Username.length > 50) {
+				showErrorModal('Failed', 'Employee Username should be 50 characters or fewer.');
+				return;
+			}
+			// Validate Password length (only in Create mode)
+			if (ddlEmpMode === "C" && (Password.length > 14 || Password.length < 8)) {
+				showErrorModal('Failed', 'Password length should be between 8 to 14.');
+				return;
+			}
+
+			return;
+		}
+
+		Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+			document.title = "Admin Access Form";
+		});
 	</script>
 
 	&nbsp;
      
     <%--    This is another new design template--%>
-	<div class="container-fluid" runat="server" ID="E_AccessC">
+	<div class="container-fluid" runat="server" ID="E_AccessC" Visible="false">
 		<!-- Page Heading --For Container untill card body-->
 		<h1 class="h3 mb-2 text-gray-800"></h1>
 		<p class="mb-4"></p>
@@ -110,7 +160,6 @@
 							</div>
 
 							<div class="form-group col-md-2">
-								<asp:CompareValidator ID="RequiredFiledValidator2" runat="server" Operator="NotEqual" ControlToValidate="ddlEmpMode" ValueToCompare="" Errormessage="Please select the Mode" ForeColor="Red" BorderStyle="None" Display="Dynamic">*</asp:CompareValidator>
 							</div>
 							<div class="form-group col-md-6">
 							</div>
@@ -138,10 +187,20 @@
 								<asp:TextBox ID="txtEmpUsername" runat="server" class="form-control input-text-cubic-14" ReadOnly="True" placeholder="Employee Username"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtEmpUsername" ErrorMessage="Please enter Employee Username" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 						</div>
-
+						<%-- Row Employee Status --%>
+						<div class="row row-margin-btm-cubic">
+							<div class="form-group col-md-4">
+								<asp:Label ID="lblStatus" runat="server" Text="Status " class="input-label-cubic"></asp:Label>
+								<asp:RadioButtonList ID="rbStatus" runat="server" RepeatColumns="2" RepeatDirection="Horizontal" class="input-radio-cubic-20">
+									<asp:ListItem Selected="True" Value="O">Active</asp:ListItem>
+									<asp:ListItem Value="C">Inactive</asp:ListItem>
+								</asp:RadioButtonList>
+							</div>
+							<div class="form-group col-md-2">
+							</div>
+						</div>
 						<%-- Row Employee Password--%>
 						<div class="row row-margin-btm-cubic">
 							<div class="form-group col-md-4">
@@ -153,48 +212,16 @@
 							</div>
 
 							<div class="form-group col-md-2">
-								<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtPassword" ErrorMessage="Please enter Employee Username" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
-
 							</div>
 						</div>
+
 
 						<hr class="cssContentHeaderLine" />
-
-						<%--Row  Quick Access --%>
-						<div class="form-row">
-							<div class="form-group col-md-12">
-								<h5 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 15px; font-style: oblique; font-weight: 600"><i class="fa fa-rocket"></i>&nbsp;&nbsp; Quick Access</h5>
-							</div>
-
-							<div class="form-group col-md-12">
-								<asp:TextBox ID="TextBox1" runat="server" Visible="False"></asp:TextBox>
-								<asp:TextBox ID="TextBox2" runat="server" Visible="False"></asp:TextBox>
-							</div>
-						</div>
-						<div class="d-grid" style="border: 0px solid;">
-							<div class="form-group" style="border: 0px solid;">
-								<div class="form-row" style="border: 0px solid; width: 100%">
-									<div class="form-group col-md-12" style="border: 0px solid;">
-										<asp:RadioButtonList runat="server" ID="RadioQuickAccess" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatDirection="Vertical" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="RadioQuickAccess_SelectedIndexChanged">
-											<asp:ListItem Value="Admin">Adminstrator</asp:ListItem>
-											<asp:ListItem Value="View">View Only</asp:ListItem>
-											<asp:ListItem Value="Default" Selected>Default</asp:ListItem>
-										</asp:RadioButtonList>
-									</div>
-								</div>
-							</div>
-						</div>
-						<br />
 
 						<%--Row  Admin Setting--%>
 						<div class="form-row">
 							<div class="form-group col-md-12">
 								<h5 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 15px; font-style: oblique; font-weight: 600"><i class="fa fa-user-shield"></i>&nbsp;&nbsp; Admin Setting</h5>
-							</div>
-
-							<div class="form-group col-md-12">
-								<asp:TextBox ID="txtResultChkBoxVAccess" runat="server" Visible="False"></asp:TextBox>
-								<asp:TextBox ID="txtResultChkBoxAccess" runat="server" Visible="False"></asp:TextBox>
 							</div>
 						</div>
 						<div class="d-grid" style="border: 0px solid;">
@@ -207,10 +234,10 @@
 
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="form-group col-md-12" style="border: 0px solid;">
-										<asp:CheckBoxList ID="ChkEditAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkEditAccessAdmin_SelectedIndexChanged">
-											<asp:ListItem Value="E_AccessC">Access Control</asp:ListItem>
-											<asp:ListItem Value="E_ClientM">Client Maintenance</asp:ListItem>
+										<asp:CheckBoxList ID="ChkEditAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px">
+											<asp:ListItem Value="E_CustomerM">Customer</asp:ListItem>
 											<asp:ListItem Value="E_ProjM">Project Maintenance</asp:ListItem>
+											<asp:ListItem Value="E_AccessC">Access Control</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -224,9 +251,8 @@
 
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="form-group col-md-12" style="border: 0px solid;">
-										<asp:CheckBoxList ID="ChkViewAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkViewAccessAdmin_SelectedIndexChanged">
-											<asp:ListItem Value="V_ClientM">Client Maintenance</asp:ListItem>
-											<asp:ListItem Value="V_ProjM">Project Maintenance</asp:ListItem>
+										<asp:CheckBoxList ID="ChkViewAccessAdmin" runat="server" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px">
+											<asp:ListItem Value="V_CustomerM">Customer</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -251,10 +277,12 @@
 								</div>
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="col-md-12 checkbox-column form-group" style="border: 0px solid;">
-										<asp:CheckBoxList ID="ChkEditAccessMaintenance" runat="server" class="col-md-6" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="Table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkEditAccessMaintenance_SelectedIndexChanged">
-											<asp:ListItem Value="E_DocM">Document Maintenance</asp:ListItem>
-											<asp:ListItem Value="E_BankStateM">Bank Statement Maintenance</asp:ListItem>
-											<asp:ListItem Value="E_InvM">Invoice Maintenance</asp:ListItem>
+										<asp:CheckBoxList ID="ChkEditAccessMaintenance" runat="server" class="col-md-6" CssClass="CheckBoxBackgrounds" AutoPostBack="true" RepeatLayout="Table" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px">
+											<asp:ListItem Value="E_BankStateM">Bank Statement</asp:ListItem>
+											<asp:ListItem Value="E_InvM">Invoice</asp:ListItem>
+											<asp:ListItem Value="E_PoM">Purchase Order</asp:ListItem>
+											<asp:ListItem Value="E_DoM">Delivery Order</asp:ListItem>
+											<asp:ListItem Value="E_QoM">Quotation</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -268,10 +296,12 @@
 
 								<div class="form-row" style="border: 0px solid; width: 100%">
 									<div class="col-md-12 form-group checkbox-column" style="border: 0px solid;">
-										<asp:CheckBoxList ID="ChkViewAccessMaintenance" runat="server" AutoPostBack="True" CssClass="CheckBoxBackgrounds" CellPadding="3" CellSpacing="3" RepeatLayout="Flow" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px" OnSelectedIndexChanged="ChkViewAccessMaintenance_SelectedIndexChanged">
-											<asp:ListItem Value="V_DocM">Document Maintenance</asp:ListItem>
-											<asp:ListItem Value="V_BankStateM">Bank Statement Maintenance</asp:ListItem>
-											<asp:ListItem Value="V_InvM">Invoice Maintenance</asp:ListItem>
+										<asp:CheckBoxList ID="ChkViewAccessMaintenance" runat="server" AutoPostBack="True" CssClass="CheckBoxBackgrounds" CellPadding="3" CellSpacing="3" RepeatLayout="Flow" style="border: 0px solid; font-size: 14px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-top: 10px">
+											<asp:ListItem Value="V_BankStateM">Bank Statement</asp:ListItem>
+											<asp:ListItem Value="V_InvM">Invoice</asp:ListItem>
+											<asp:ListItem Value="V_PoM">Purchase Order</asp:ListItem>
+											<asp:ListItem Value="V_DoM">Delivery Order</asp:ListItem>
+											<asp:ListItem Value="V_QoM">Quotation</asp:ListItem>
 										</asp:CheckBoxList>
 									</div>
 								</div>
@@ -303,63 +333,82 @@
 								</div>
 
 							</div>
-							</div>
+						</div>
 
 						<br />
-							<%--  Submit button row--%>
-							<div class="form-row">
-								<div class="form-group form-group col-md-6">
-									<asp:TextBox ID="txtAutoNumber" runat="server" class="form-control" visible="false"></asp:TextBox>
-									<asp:TextBox ID="txtAutoNumberIncreament" runat="server" class="form-control" visible="false"></asp:TextBox>
-									<asp:TextBox ID="txtRunningNo" runat="server" class="form-control" visible="false"></asp:TextBox>
-
-								</div>
-								<div class="form-group col-md-6">
-									<a ID="DirectTarget" runat="server" data-bs-toggle="modal" data-bs-target="#ConfirmationModalMessage" data-bs-backdrop="static">
-										<asp:Button runat="server" ID="btnCreate" class="btn-save" style="float: left;" Text="Create/Update" OnClick="btnCreate_Click"></asp:Button>
-									</a>
-								</div>
+						<%--  Submit button row--%>
+						<div class="row row-margin-btm-cubic">
+							<div class="form-group col-md-6">
 							</div>
-							<!-- Confirmation Modal (Editable)-->
-							<div class="modal fade" id="ConfirmationModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header Modal-Confirmation-Cubic">
-											<h5 class="modal-title" id="ConfirmationMessageModalTitle">Confirmation</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">×</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ConfirmationMessageModalContent">Are You Sure Want To Save?</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
-											<asp:Button ID="ConfirmBtnCreate" runat="server" class="btn-save" Text="Create/Update" OnClick="ConfirmBtnCreate_Click" />
-											<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
-										</div>
+							<div class="form-group col-md-6">
+
+								<a data-bs-toggle="modal" data-bs-target="#ConfirmationModalMessage" data-bs-backdrop="static">
+									<button class="btn-save" style="float: left;" onclick="validation()">Create</button>
+								</a>
+
+							</div>
+						</div>
+
+						<!-- Modal-->
+						<!-- Confirmation Modal-->
+						<div class="modal fade" id="ConfirmationModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header Modal-Confirmation-Cubic">
+										<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
+										<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
+									<div class="modal-footer">
+										<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
+										<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
 									</div>
 								</div>
 							</div>
-							<%-- End Confirmation Modal --%>
+						</div>
 
-							<!-- Fail Message Modal -->
-							<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header Modal-Error-Cubic">
-											<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">x</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
-										</div>
+						<!-- Success/Fail Message Modal-->
+						<div class="modal fade" id="ModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="MessageModalTitle">Success</h5>
+										<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+											<span aria-hidden="true">x</span>
+										</button>
+									</div>
+									<div class="modal-body" id="MessageModalContent"></div>
+									<div class="modal-footer">
+										<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
 									</div>
 								</div>
 							</div>
-							<%-- Error --%>
+						</div>
+
+						<!-- Fail Message Modal -->
+						<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog" role="document">
+								<div class="modal-content">
+									<div class="modal-header Modal-Error-Cubic">
+										<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
+										<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
+											<span aria-hidden="true">x</span>
+										</button>
+									</div>
+									<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
+									<div class="modal-footer">
+										<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<%-- Error --%>
 					</ContentTemplate>
+					<Triggers>
+						<asp:PostBackTrigger ControlID="BtnConfirmSave" />
+					</Triggers>
 				</asp:UpdatePanel>
 			</div>
 		</div>

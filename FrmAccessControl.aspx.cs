@@ -12,107 +12,123 @@ using System.Data.SqlTypes;
 using System.Web.UI.WebControls.WebParts;
 using Newtonsoft.Json;
 using static CUBIC_CIBT_Project.GlobalProjectClass;
+using static CUBIC_CIBT_Project.GlobalProjectClass.DataStructure;
 using System.Web.UI.HtmlControls;
+using Microsoft.Ajax.Utilities;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace CUBIC_CIBT_Project
 {
 	public partial class FrmAccessControl : Page
 	{
-		//List<string> Accessibility = new List<string>();
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			if (!Page.IsPostBack)
 			{
-				UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+				//Redirect to login page if user dont have loged in session
+				if (G_UserLogin.IsNullOrWhiteSpace() || Session["UserDetails"] == null)
+				{
+					GF_ReturnErrorMessage("Please Login to the account before use access the content.", this.Page, this.GetType(), "~/Frmlogin.aspx");
+					return;
+				}
+				//Get User Details from Server Session
+				UserDetails userDetails = GF_GetSession(Session["UserDetails"]?.ToString());
 				Dictionary<string, HtmlGenericControl> Access = new Dictionary<string, HtmlGenericControl>()
 				{ ["E_AccessC"] = E_AccessC };
-				GF_DisplayWithAccessibility(userDetails.User_Access, Access);
-
-				List<CheckBoxList> chkBoxList = new List<CheckBoxList>()
-				{  ChkEditAccessMaintenance, ChkViewAccessReport, ChkViewAccessMaintenance };
-				chkBoxList.ForEach(chkList => chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true));
+				bool HasAccess = GF_DisplayWithAccessibility(userDetails.User_Access, Access);
+				if (!HasAccess)
+				{
+					GF_ReturnErrorMessage("You dont have access to this page, kindly look for adminstration.", this.Page, this.GetType(), "~/Default.aspx");
+					return;
+				}
 			}
 		}
 
-		protected void ConfirmBtnCreate_Click(object sender, EventArgs e)
+		/// <summary>
+		/// Handles the "Save" button click event.
+		/// Determines if the employee mode is "Create" or "Update" and processes accordingly.
+		/// Shows a success modal and redirects to the access control page.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected void BtnConfirmSave_Click(object sender, EventArgs e)
 		{
-			if (ddlEmpMode.SelectedValue == "C")
+			string FailedMessage = "";
+			if (!F_CheckUsernameExistence(out FailedMessage))
 			{
-				F_CreateEmp();
+				ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "Modal_Failed", "closeModal(); showErrorModal('Failed', '" + FailedMessage + "');", true);
+				return;
 			}
-			else
+
+			string ddlMode = "";
+			switch (ddlEmpMode.SelectedValue)
 			{
-				F_UploadEmpDetails();
-			}
-			//Save access and details to database
-		}
-		//Admin Edit
-		protected void ChkEditAccessAdmin_SelectedIndexChanged(object sender, EventArgs e)
-		{
-		}
-		//Maintenance View
-		protected void ChkViewAccessMaintenance_SelectedIndexChanged(object sender, EventArgs e)
-		{ 
-		}
-		//Maintenance Edit
-		protected void ChkEditAccessMaintenance_SelectedIndexChanged(object sender, EventArgs e)
-		{
-		}
-		protected void RadioQuickAccess_SelectedIndexChanged(object sender,EventArgs e)
-		{
-			F_SetAllChkBtn(false);
-			var QuickAccess = RadioQuickAccess.SelectedValue.ToString();
-			switch (QuickAccess)
-			{
-				case "Default":
-					ChkEditAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
-					ChkViewAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
-					ChkViewAccessReport.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
+				case "C":
+					ddlMode = "Created";
+					F_CreateEmp();
 					break;
-				case "Admin":
-					F_SetAllChkBtn(true);
-					break;
-				case "View":
-					ChkViewAccessMaintenance.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
-					ChkViewAccessReport.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = true);
+				case "U":
+					ddlMode = "Updated";
+					F_UploadEmp();
 					break;
 				default:
 					break;
 			}
-		}
-		protected void ddlEmpMode_SelectedIndexChanged(object sender,EventArgs e) 
-		{
-			Control myControl = Page.Master.FindControl("form1");
-			var SetReadOnly = (ddlEmpMode.SelectedValue == "") ? true : false;
+			string SuccessMessage = $"The Employee {ddlMode} Successfully.";
+			ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "Modal_Success", "showModal('Success', '" + SuccessMessage + "');", true);
 
+			Response.Redirect("~/FrmAccessControl.aspx"); // Refresh page
+		}
+
+		/// <summary>
+		/// Handles the change in the employee mode dropdown selection.
+		/// Toggles form fields based on the selected mode (Create or Update).
+		/// Populates employee IDs if the update mode is selected.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected void ddlEmpMode_SelectedIndexChanged(object sender, EventArgs e)
+		{
 			List<TextBox> TxtList = new List<TextBox>() { txtEmpUsername, txtPassword };
 
-			//Set ReadOnly
-			TxtList.ForEach(txt => txt.ReadOnly= SetReadOnly);
+			bool HasModeSelected = ddlEmpMode.SelectedValue != "";
+			bool UpdateMode = ddlEmpMode.SelectedValue == "U";
+			bool CreateMode = ddlEmpMode.SelectedValue == "C";
 
-			//Set Visble
-			btnGeneratePassword.Visible = !SetReadOnly;
+			//Create or Update Mode
+			TxtList.ForEach(txt => txt.ReadOnly = !HasModeSelected);
+			btnGeneratePassword.Visible = HasModeSelected;
 
-			//Display Select Input when update mode and Txt Input when Create or Default Mode
-			var SetVisible = (ddlEmpMode.SelectedValue == "U");
-			EmpIDDrpList.Visible = SetVisible;
-			lblEmpIDtxt.Visible = SetVisible;
+			//Update mode
+			EmpIDDrpList.Visible = UpdateMode;
+			lblEmpIDtxt.Visible = UpdateMode;
 
-			//Reset input feild
-			if(SetReadOnly) GF_ClearInputFeild(myControl);
-
+			//Clear the item every time fill in the data to it
+			GF_ClearItem(EmpIDDrpList);
 			//Display current employees ID
-			if (SetVisible)
+			if (HasModeSelected)
 			{
-				GF_DrpListAddDefaultItem(EmpIDDrpList);
-				F_PopulateEmp();
+				if (UpdateMode)
+				{
+					string WhereClause = $"WHERE [EMP_NO] <> '{G_UserLogin}' AND [EMP_STATUS] != 'X' ";
+					GF_PopulateDocNo(EmpIDDrpList, new M_Employee(), "EMP_NO", WhereClause);
+				}
+
 			}
 			else
 			{
-				GF_ClearItem(EmpIDDrpList);
+				GF_ClearInputFeild(Page.Master.FindControl("form1"));
 			}
 		}
-		protected void btnGeneratePassword_Click(object sender, EventArgs e) 
+
+		/// <summary>
+		/// Generates a strong password for the user.
+		/// The password includes a mix of letters, numbers, and special symbols,
+		/// and is displayed in the txtPassword field.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		protected void btnGeneratePassword_Click(object sender, EventArgs e)
 		{
 			int Total_Len = 12;
 
@@ -126,7 +142,7 @@ namespace CUBIC_CIBT_Project
 			int Num_Len = Total_Len - Char_Len - 1;
 
 			//Append Character
-			string Char_Pass = 
+			string Char_Pass =
 				new string(Enumerable
 				.Repeat(Letters, Char_Len)
 				.Select(c => c[Rnd.Next(Letters.Length)])
@@ -141,9 +157,9 @@ namespace CUBIC_CIBT_Project
 				;
 
 			//Append Special Symbol
-			string Special_Pass = 
+			string Special_Pass =
 				SpecialSymbols
-				.OrderBy(c=>Rnd.Next(SpecialSymbols.Length))
+				.OrderBy(c => Rnd.Next(SpecialSymbols.Length))
 				.First()
 				.ToString();
 
@@ -154,179 +170,387 @@ namespace CUBIC_CIBT_Project
 			string password = new string(temp_pass.ToCharArray().OrderBy(c => Rnd.Next(temp_pass.Length)).ToArray());
 			txtPassword.Text = password;
 		}
-		private void F_SetAllChkBtn(bool SetCheck)
+
+		/// <summary>
+		/// Updates existing employee information and access permissions.
+		/// Modifies employee details including username and status.
+		/// Hashes the password if provided and updates the database.
+		/// </summary>
+		private void F_UploadEmp()
 		{
-			//Page.Master.FindControl("form1")?.Controls.OfType<CheckBoxList>().ToList().ForEach(chkList => chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck));
-			List<CheckBoxList> chkBoxList = new List<CheckBoxList>() 
-			{ ChkEditAccessAdmin, ChkEditAccessMaintenance, ChkViewAccessAdmin, ChkViewAccessReport, ChkViewAccessMaintenance };
-			chkBoxList.ForEach(chkList=>chkList.Items.Cast<ListItem>().ToList().ForEach(item => item.Selected = SetCheck));
+
+			string WhereClause = $"WHERE [EMP_NO] = '{EmpIDDrpList.SelectedValue}' ";
+			M_Employee m_Employee = new M_Employee()
+			{
+				Emp_UserName = txtEmpUsername.Text,
+				Emp_Status = char.Parse(rbStatus.SelectedValue),
+				Emp_Modified_By = G_UserLogin,
+				Emp_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
+			};
+			//Update the password if user fill in
+			if (txtPassword.Text != string.Empty)
+			{
+				m_Employee.Emp_Password = GF_HashPassword(txtPassword.Text);
+			}
+			TableDetails tableDetails = F_GetTableDetails(m_Employee, WhereClause, IsUpdateMethod: true);
+			DB_UpdateData(tableDetails);
+			//Update access
+			F_UpdateAccesss(EmpIDDrpList.SelectedValue);
 		}
-		private void F_UploadEmpDetails()
-		{
-			SqlConnection Conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(Conn);
-			Conn.Open();
-			try
-			{
-				//Create a one to many relation table
-				string SQLSelectCommand = "UPDATE T_EMPLOYEE SET (EMP_USERNAME,EMP_MODIFIED_DATE,EMP_MODIFIED_BY)";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
-				SQLcmd.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				GF_ReturnErrorMessage("Employee details Upload Failed.",this.Page,this.GetType());
-				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "UploadEmployeeDetails", ex.ToString());
-			}
-			finally
-			{
-				Conn.Dispose();
-				Conn.Close();
-			}
-		}
-		//Debug
+
+		/// <summary>
+		/// Creates a new employee record with initial details and access permissions.
+		/// Generates a new employee ID and hashes the password.
+		/// Inserts the new employee record into the database.
+		/// </summary>
 		private void F_CreateEmp()
 		{
-			UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
-			string EmpNO = F_GenerateEmpID(userDetails.User_BU, "EMP");
-			SqlConnection Conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(Conn);
-			Conn.Open();
-			try
+			string tempBU = "CS";
+			string tempEmpNo = GF_GenerateID(tempBU, "EMP");
+			M_Employee m_Employee = new M_Employee()
 			{
-				string SQLInsertCommand = "INSERT INTO T_EMPLOYEE()";
-				SQLInsertCommand += $"VALUES('{EmpNO}',);";
-				SqlCommand SQLcmd = new SqlCommand(SQLInsertCommand, Conn);
-				SQLcmd.ExecuteNonQuery();
-			}
-			catch (Exception ex)
-			{
-				GF_ReturnErrorMessage("Failed to Create an Employee",this.Page,this.GetType());
-				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "CreateEmp", ex.ToString());
-			}
-			finally
-			{
-				Conn.Dispose();
-				Conn.Close();
-			}
+				Emp_No = tempEmpNo,
+				Emp_UserName = txtEmpUsername.Text,
+				Emp_Password = GF_HashPassword(txtPassword.Text),
+				Emp_Status = char.Parse(rbStatus.SelectedValue),
+				Emp_BU = tempBU,
+				Emp_IsLogIn = 'N',
+				Emp_Modified_By = G_UserLogin,
+				Emp_Created_By = G_UserLogin,
+			};
+			TableDetails tableDetails = F_GetTableDetails(m_Employee);
+			DB_CreateData(tableDetails);
+			//Create Access
+			F_CreateAccess(tempEmpNo);
 		}
-		//Debug
-		protected void btnCreate_Click(object sender, EventArgs e)
+
+		/// <summary>
+		/// Retrieves selected access permissions from the form.
+		/// Converts them into a list of data strings based on the access mode.
+		/// </summary>
+		/// <param name="_EmpNo">Employee number (optional for create mode).</param>
+		/// <param name="IsUpdateMode">Flag to indicate if the operation is in update mode.</param>
+		/// <returns>A list of selected access permissions, Or return null if no access is checked</returns>
+		private List<string> F_GetCheckedAccess(string _EmpNo = "", bool IsUpdateMode = false)
 		{
-			//check if the check box is not all empty
-			if (txtPassword.Text == string.Empty || txtEmpUsername.Text == string.Empty || ddlEmpMode.SelectedValue == "")
+			List<string> Values = new List<string>();
+			bool HasAccessChecked = false;
+			Dictionary<string, int> accessMapping = GetAccessMapping(); //return the access_no when pass the access_desc to the dictionary
+			List<CheckBoxList> checkBoxLists = new List<CheckBoxList>()
 			{
-				DirectTarget.Attributes["data-bs-target"] = "#ErrorModalMessage";
-			}
-			SqlConnection Conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(Conn);
-			Conn.Open();
-			try
-			{
-				string SQLSelectCommand = $"SELECT EMP_NO FROM [T_EMPLOYEE] WHERE [EMP_NO]='{txtEmpUsername}';";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
-				SqlDataReader DataReader = SQLcmd.ExecuteReader();
-				if (!DataReader.HasRows)
+			ChkEditAccessAdmin,
+			ChkEditAccessMaintenance,
+			ChkViewAccessAdmin,
+			ChkViewAccessMaintenance,
+			ChkViewAccessReport
+			};
+			checkBoxLists.
+				ForEach(
+				checkBoxList =>
 				{
-					GF_ReturnErrorMessage("User Not Found, kindly look for administration.", this.Page, this.GetType());
-					return;
-				}
-				while (DataReader.Read())
-				{
-					
-				}
-				DirectTarget.Attributes["data-bs-target"] = "#ConfirmationModalMessage";
-			}
-			catch (Exception ex)
+					checkBoxList.Items.Cast<ListItem>().ForEach(item =>
+					{
+						if (item.Selected)
+						{
+							HasAccessChecked = true;
+							// Add the value or text of the checked item
+							if (IsUpdateMode)
+							{
+								Values.Add($"'{accessMapping[item.Value]}'");
+							}
+							else
+							{
+								Values.Add($"('{_EmpNo}','{accessMapping[item.Value]}')");
+							}
+						}
+					});
+				});
+			if (HasAccessChecked)
 			{
-				DirectTarget.Attributes["data-bs-target"] = "#ErrorModalMessage";
-				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "btnCreate_Click", ex.ToString());
+				return Values;
 			}
-			finally
+			else
 			{
-				Conn.Dispose();
-				Conn.Close();
+				return null;
 			}
 		}
 
-        protected void ChkViewAccessAdmin_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-		private void F_PopulateEmp()
+		/// <summary>
+		/// Retrieves the mapping of access descriptions to their corresponding numbers.
+		/// Queries the database to get access details and maps descriptions to access numbers.
+		/// </summary>
+		/// <returns>A dictionary mapping access descriptions to access numbers.</returns>
+		private Dictionary<string, int> GetAccessMapping()
 		{
-			UserDetails userDetails = JsonConvert.DeserializeObject<UserDetails>(Session["UserDetails"]?.ToString());
+			Dictionary<string, int> accessMapping = new Dictionary<string, int>();
 
-			SqlConnection Conn = new SqlConnection(G_ConnectionString);
-			GF_CheckConnectionStatus(Conn);
-			Conn.Open();
-			try
+			// Assuming you have a method to retrieve all access descriptions and numbers
+			TableDetails tableDetails = F_GetTableDetails(new M_Access());
+			DataTable accessTable = DB_ReadData(tableDetails);
+			foreach (DataRow row in accessTable.Rows)
 			{
-				string SQLSelectCommand = $"SELECT [EMP_NO] FROM [T_EMPLOYEE] WHERE [EMP_NO] <> {userDetails.User_Login};";
-				SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
-				SqlDataReader DataReader = SQLcmd.ExecuteReader();
-				if (!DataReader.HasRows)
-				{
-					GF_ReturnErrorMessage("No Employee Found", this.Page, this.GetType());
-					return;
-				}
-				while (DataReader.Read())
-				{
-					EmpIDDrpList.Items.Add(new ListItem(DataReader["EMP_NO"]?.ToString(), DataReader["EMP_NO"]?.ToString()));
-				}
+				int accessNo = Convert.ToInt32(row["ACCESS_NO"]);
+				string accessDesc = row["ACCESS_DESC"].ToString();
+				accessMapping[accessDesc] = accessNo;
 			}
-			catch (Exception ex)
-			{
-				GF_ReturnErrorMessage("Failed to Populate Employee", this.Page, this.GetType());
-				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "CreateEmp", ex.ToString());
-			}
-			finally
-			{
-				Conn.Dispose();
-				Conn.Close();
-			}
+
+			return accessMapping;
 		}
 
-		private string F_GenerateEmpID(string _tempBU,string _tempPrefix)
-		{
-			return _tempPrefix + GF_GetRunningNumber(_tempBU, _tempPrefix).ToString().PadLeft(8, '0');
-		}
-
+		/// <summary>
+		/// Handles the change in the employee ID dropdown selection.
+		/// Populates form fields with selected employee details and current access permissions.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		protected void EmpIDDrpList_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			//SqlConnection Conn = new SqlConnection(G_ConnectionString);
-			//GF_CheckConnectionStatus(Conn);
-			//Conn.Open();
-			//try
-			//{
-			//	string SQLSelectCommand = $"SELECT [EMP_USERNAME] FROM [T_EMPLOYEE] WHERE [EMP_NO] = '{EmpIDDrpList.SelectedValue}';";
-			//	SqlCommand SQLcmd = new SqlCommand(SQLSelectCommand, Conn);
-			//	SqlDataReader DataReader = SQLcmd.ExecuteReader();
-			//	if (!DataReader.HasRows)
-			//	{
-			//		GF_ReturnErrorMessage("No Employee Found", this.Page, this.GetType());
-			//		return;
-			//	}
-			//	DataReader.Read();
-			//	txtEmpUsername.Text = DataReader["EMP_USERNAME"]?.ToString();
-			//}
-			//catch (Exception ex)
-			//{
-			//	GF_ReturnErrorMessage("Failed to Populate Employee", this.Page, this.GetType());
-			//	GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "CreateEmp", ex.ToString());
-			//}
-			//finally
-			//{
-			//	Conn.Dispose();
-			//	Conn.Close();
-			//}
+			Dictionary<string, int> accessMapping = GetAccessMapping(); //return the access_no when pass the access_desc to the dictionary
+
+			//Employee Details
+			string WhereClause = $"WHERE [EMP_NO] = '{EmpIDDrpList.SelectedValue}' ";
+			TableDetails tableDetails = F_GetTableDetails(new M_Employee(), WhereClause);
+			DataTable Emp_DataTable = DB_ReadData(tableDetails);
+			if (Emp_DataTable == null)
+			{
+				return;
+			}
+			if (Emp_DataTable.Rows.Count == 0)
+			{
+				return;
+			}
+
+			DataRow row = Emp_DataTable.Rows[0];
+			txtEmpUsername.Text = row["EMP_USERNAME"]?.ToString();
+			rbStatus.SelectedValue = row["EMP_STATUS"]?.ToString();
+
+			//Access Details
+
+			List<CheckBoxList> checkBoxLists = new List<CheckBoxList>()
+			{
+			ChkEditAccessAdmin,
+			ChkEditAccessMaintenance,
+			ChkViewAccessAdmin,
+			ChkViewAccessMaintenance,
+			ChkViewAccessReport
+			};
+
+			DataTable Access_DataTable = F_GetEmpCurrentAccess(EmpIDDrpList.SelectedValue);
+			if (Access_DataTable == null)
+			{
+				return;
+			}
+			if (Access_DataTable.Rows.Count == 0)
+			{
+				return;
+			}
+			var CurrAccess = Access_DataTable.AsEnumerable()
+											  .Select(data => data["ACCESS_NO"].ToString())
+											  .ToList();
+
+			checkBoxLists.ForEach(checkBoxList =>
+			{
+				checkBoxList.Items.Cast<ListItem>().ForEach(item =>
+				{
+					string mappedValue = accessMapping[item.Value].ToString();
+					item.Selected = CurrAccess.Contains(mappedValue);
+				});
+			});
 		}
 
-		
+		/// <summary>
+		/// Retrieves the current access permissions for a specific employee.
+		/// Queries the database for access permissions associated with the employee number.
+		/// </summary>
+		/// <param name="_EmpNo">The employee number.</param>
+		/// <returns>A DataTable containing current access permissions.</returns>
+		private DataTable F_GetEmpCurrentAccess(string _EmpNo)
+		{
+			//Get the current access of the employee
+			string WhereClause = $"WHERE [EMP_NO] = '{_EmpNo}' ";
+			TableDetails tableDetails = F_GetTableDetails(new T_Employee_Access(), WhereClause);
+			return DB_ReadData(tableDetails, "[ACCESS_NO]");
+		}
+
+		/// <summary>
+		/// Inserts selected access permissions into the database for a new employee.
+		/// Retrieves selected access permissions and inserts them as records in the database.
+		/// </summary>
+		/// <param name="_EmpNo">The employee number.</param>
+		private void F_CreateAccess(string _EmpNo)
+		{
+			//Receive checked access and convert them into a list of data
+			List<string> Values = F_GetCheckedAccess(_EmpNo);
+			if (Values == null)
+			{
+				return;
+			}
+			string Access = string.Join(",", Values);
+
+			//connect with database and insert the data - DB_ReadData() requires multiple sql Insert request
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
+			try
+			{
+				string SQLInsertCommand = $"INSERT INTO [dbo].[T_EMPLOYEE_ACCESS]([EMP_NO],[ACCESS_NO]) ";
+				SQLInsertCommand += $"VALUES{Access};";
+				SqlCommand SQLCmd = new SqlCommand(SQLInsertCommand, Conn);
+				SQLCmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "F_CreateAccess", ex.ToString());
+			}
+			finally
+			{
+				Conn.Dispose();
+				Conn.Close();
+			}
+			return;
+		}
+
+		/// <summary>
+		/// Updates the access permissions for an existing employee.
+		/// Compares new and current access permissions and adds or removes as needed.
+		/// </summary>
+		/// <param name="_EmpNo">The employee number.</param>
+		private void F_UpdateAccesss(string _EmpNo)
+		{
+			List<string> newAccess = F_GetCheckedAccess(_EmpNo);
+
+			//Get the current access of the employee
+			DataTable dataTable = F_GetEmpCurrentAccess(_EmpNo);
+
+			if (dataTable == null)
+			{
+				return;
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return;
+			}
+			var CurrAccess = dataTable.AsEnumerable()
+											  .Select(data => data["ACCESS_NO"].ToString())
+											  .ToList();
+			//delete all current access if the newAccess is null
+			if (newAccess != null)
+			{
+				//Remove those access that have currently compared to new access
+				for (int i = CurrAccess.Count - 1; i >= 0; i--)
+				{
+					string accessDesc = CurrAccess[i];
+					if (newAccess.Contains(accessDesc))
+					{
+						// Remove from the Values list
+						newAccess.Remove(accessDesc);
+
+						// Remove from the currAccess list
+						CurrAccess.Remove(accessDesc);
+					}
+				}
+				//Those access left at Values are the new access to add 
+				F_AccessToAdd(newAccess);
+			}
+			//Those access left at currAccess are the old access to delete
+			F_AccessToDelete(_EmpNo, CurrAccess);
+
+			
+
+		}
+
+		/// <summary>
+		/// Inserts new access permissions into the database for an existing employee.
+		/// </summary>
+		/// <param name="_newAccess">A list of new access permissions to add.</param>
+		private void F_AccessToAdd(List<string> _newAccess)
+		{
+			string AccessToAdd = string.Join(",", _newAccess);
+			//connect with database and insert the data - DB_ReadData() requires multiple sql Insert request
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
+			try
+			{
+				string SQLInsertCommand = $"INSERT INTO [dbo].[T_EMPLOYEE_ACCESS] ";
+				SQLInsertCommand += $"VALUES{AccessToAdd};";
+				SqlCommand SQLCmd = new SqlCommand(SQLInsertCommand, Conn);
+				SQLCmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "F_AccessToAdd", ex.ToString());
+			}
+			finally
+			{
+				Conn.Dispose();
+				Conn.Close();
+			}
+		}
+
+		/// <summary>
+		/// Deletes old access permissions from the database for an existing employee.
+		/// </summary>
+		/// <param name="_EmpNo">The employee number.</param>
+		/// <param name="_CurrAccess">A list of current access permissions to delete.</param>
+		private void F_AccessToDelete(string _EmpNo, List<string> _CurrAccess)
+		{
+			string AccessToDelete = string.Join(",", _CurrAccess);
+			string WhereClause = $"WHERE [EMP_NO] = '{_EmpNo}' AND [ACCESS_NO] IN ({AccessToDelete}) ";
+			TableDetails tableDetails = F_GetTableDetails(new T_Employee_Access(), WhereClause);
+
+			SqlConnection Conn = new SqlConnection(G_ConnectionString);
+			GF_CheckConnectionStatus(Conn);
+			Conn.Open();
+			try
+			{
+				string SQLDeleteCommand = $"DELETE FROM [dbo].[T_EMPLOYEE_ACCESS] ";
+				SQLDeleteCommand += $"{tableDetails.WhereOrJoinClause};";
+				SqlCommand SQLCmd = new SqlCommand(SQLDeleteCommand, Conn);
+				SQLCmd.ExecuteNonQuery();
+			}
+			catch (Exception ex)
+			{
+				GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "F_AccessToDelete", ex.ToString());
+			}
+			finally
+			{
+				Conn.Dispose();
+				Conn.Close();
+			}
+		}
+
+		/// <summary>
+		/// Checks for the existence of data based on the selected employee mode and username.
+		/// </summary>
+		/// <param name="_FailedMessage">Out parameter that holds the error message if data existence check fails.</param>
+		/// <returns>True if data does not exist or mode is not "Create", otherwise false.</returns>
+		private bool F_CheckUsernameExistence(out string _FailedMessage)
+		{
+			if (ddlEmpMode.SelectedValue != "C")
+			{
+				_FailedMessage = "";
+				return true;
+			}
+			//Check value Existence (Employee Username)
+			string SelectData = "[EMP_USERNAME] ";
+			string WhereClause = $"WHERE [EMP_USERNAME] = '{txtEmpUsername.Text}' ";
+			TableDetails tableDetails = F_GetTableDetails(new M_Employee(), WhereClause);
+			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
+			if (dataTable == null)
+			{
+				_FailedMessage = "There\'s an issue while receiving the data, Please try again later.";
+				return false;
+			}
+			if (dataTable.Rows.Count > 0)
+			{
+				_FailedMessage = "The Employee Username already exists. Please try another username.";
+				return false;
+			}
+			_FailedMessage = "";
+			return true;
+		}
+
 	}
+
 }
-
-
-//myControl.Controls.OfType<TextBox>().ToList().ForEach(txtBox => txtBox.Text = string.Empty);
-//passing the action to inside of ForEach to GF_EmptyInputFeild > GF_InputFeild

@@ -69,67 +69,22 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.DropDownList ddlProjectMode;
 
 		/// <summary>
-		/// lblProjectID control.
+		/// lblCustomerCodeTxt control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblProjectID;
+		protected global::System.Web.UI.WebControls.Label lblCustomerCodeTxt;
 
 		/// <summary>
-		/// DrpListProjectID control.
+		/// DrpListCustomerCode control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListProjectID;
-
-		/// <summary>
-		/// lblProjectDate control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblProjectDate;
-
-		/// <summary>
-		/// txtProjectDate control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtProjectDate;
-
-		/// <summary>
-		/// RequiredFieldValidator2 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
-
-		/// <summary>
-		/// lblStatus control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblStatus;
-
-		/// <summary>
-		/// rbStatus control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RadioButtonList rbStatus;
+		protected global::System.Web.UI.WebControls.DropDownList DrpListCustomerCode;
 
 		/// <summary>
 		/// lblProjectCodeTxt control.
@@ -150,112 +105,58 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.DropDownList DrpListProjectCode;
 
 		/// <summary>
-		/// lblRemark control.
+		/// Label1 control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblRemark;
+		protected global::System.Web.UI.WebControls.Label Label1;
 
 		/// <summary>
-		/// txtRemark control.
+		/// txtProjectName control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtRemark;
+		protected global::System.Web.UI.WebControls.TextBox txtProjectName;
 
 		/// <summary>
-		/// vRevNo control.
+		/// lblProjectDate control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator vRevNo;
+		protected global::System.Web.UI.WebControls.Label lblProjectDate;
 
 		/// <summary>
-		/// lblCustomerCodeTxt control.
+		/// txtProjectDate control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblCustomerCodeTxt;
+		protected global::System.Web.UI.WebControls.TextBox txtProjectDate;
 
 		/// <summary>
-		/// DrpListCustomerCode control.
+		/// lblStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListCustomerCode;
+		protected global::System.Web.UI.WebControls.Label lblStatus;
 
 		/// <summary>
-		/// lblSupplierCodeTxt control.
+		/// rbStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.Label lblSupplierCodeTxt;
-
-		/// <summary>
-		/// DrpListSupplierCode control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.DropDownList DrpListSupplierCode;
-
-		/// <summary>
-		/// DirectTarget control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.HtmlControls.HtmlAnchor DirectTarget;
-
-		/// <summary>
-		/// BtnSave control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Button BtnSave;
-
-		/// <summary>
-		/// txtAutoNumber control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumber;
-
-		/// <summary>
-		/// txtAutoNumberIncreament control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumberIncreament;
-
-		/// <summary>
-		/// txtRunningNo control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtRunningNo;
+		protected global::System.Web.UI.WebControls.RadioButtonList rbStatus;
 
 		/// <summary>
 		/// BtnConfirmSave control.

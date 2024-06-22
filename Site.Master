@@ -160,7 +160,6 @@ all JS and CSS is crazy important
 						</a>
 
 						<%-- Operation --%>
-						<%-- Operation --%>
 						<div class="sidenav-menu-heading">Operation</div>
 
 						<asp:HyperLink class="nav-link collapsed" href="javascript:void(0);" runat="server" data-bs-toggle="collapse" aria-expanded="false" data-bs-target="#collapseOperation" aria-controls="collapseOperation">
@@ -171,14 +170,15 @@ all JS and CSS is crazy important
 						<div class="collapse" id="collapseOperation" data-parent="#accordionSidenav">
 							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPagesMenu">
 								<!-- Nested Sidenav Accordion (Pages -> Account)-->
-								<asp:HyperLink class="nav-link" ID="HPFrmAccessControl" runat="server" NavigateUrl="FrmAccessControl.aspx?ID=HLinkFrmAccessControl">
-                                    Access Control
+
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmCustomerMaint" runat="server" NavigateUrl="FrmCustomerMaintenance.aspx">
+                                    Customer
 								</asp:HyperLink>
-								<asp:HyperLink class="nav-link" ID="HPFrmClientMaint" runat="server" NavigateUrl="FrmClientMaintenance.aspx?ID=HLinkFrmAccessControl">
-                                    Client Maintenance
-								</asp:HyperLink>
-								<asp:HyperLink class="nav-link" ID="HPFrmProjMaint" runat="server" NavigateUrl="FrmProjectMaintenance.aspx?ID=HLinkFrmAccessControl">
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmProjMaint" runat="server" NavigateUrl="FrmProjectMaintenance.aspx">
                                     Project Maintenance
+								</asp:HyperLink>
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmAccessControl" runat="server" NavigateUrl="FrmAccessControl.aspx">
+									Access Control
 								</asp:HyperLink>
 								<!-- Nested Sidenav Accordion (Pages -> Authentication)-->
 							</nav>
@@ -197,17 +197,21 @@ all JS and CSS is crazy important
 						<div class="collapse" id="collapseMaintenance" data-parent="#accordionSidenav">
 							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavMaintenanceMenu">
 								<!-- Nested Sidenav Accordion (Pages -> Account)-->
-
-								<asp:HyperLink class="nav-link" ID="HPFrmDocumentMaint" runat="server" NavigateUrl="FrmDocumentMaintenance.aspx?ID=HPDocumentM">
-                                        Document Maintenance
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmBankStateMaint" runat="server" NavigateUrl="FrmBankStatementMaintenance.aspx">
+                                        Bank Statement
 								</asp:HyperLink>
 
-								<asp:HyperLink class="nav-link" ID="HPFrmBankStateMaint" runat="server" NavigateUrl="FrmBankStatementMaintenance.aspx?ID=HPCalendar">
-                                        Bank Statement Maintenance
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmInvMaint" runat="server" NavigateUrl="FrmInvoiceMaintenance.aspx">
+                                        Invoice
 								</asp:HyperLink>
-
-								<asp:HyperLink class="nav-link" ID="HPFrmInvMaint" runat="server" NavigateUrl="FrmInvoiceMaintenance.aspx?ID=HPMMaterial">
-                                        Invoice Maintenance
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmPoMaint" runat="server" NavigateUrl="FrmPurchaseOrderMaintenance.aspx">
+										Purchase Order 
+								</asp:HyperLink>
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmDoMaint" runat="server" NavigateUrl="FrmDeliveryOrderMaintenance.aspx">
+										Delivery Order 
+								</asp:HyperLink>
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmQoMaint" runat="server" NavigateUrl="FrmQuotationMaintenance.aspx">
+										Quotation 
 								</asp:HyperLink>
 							</nav>
 						</div>
@@ -225,7 +229,7 @@ all JS and CSS is crazy important
 						<div class="collapse" id="collapseReport" data-parent="#accordionSidenav">
 							<nav class="sidenav-menu-nested nav accordion" id="accordionSidenavReportMenu">
 								<!-- Nested Sidenav Accordion (Pages -> Account)-->
-								<asp:HyperLink class="nav-link" ID="HPFrmProjReport" runat="server" NavigateUrl="FrmProjectListing.aspx?ID=HPDocumentM">
+								<asp:HyperLink Visible="false" class="nav-link" ID="HPFrmProjReport" runat="server" NavigateUrl="FrmProjectListing.aspx?ID=HPDocumentM">
                  Project Report
 								</asp:HyperLink>
 							</nav>

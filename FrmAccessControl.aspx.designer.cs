@@ -69,15 +69,6 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.DropDownList ddlEmpMode;
 
 		/// <summary>
-		/// RequiredFiledValidator2 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator RequiredFiledValidator2;
-
-		/// <summary>
 		/// lblEmpIDtxt control.
 		/// </summary>
 		/// <remarks>
@@ -123,13 +114,22 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.TextBox txtEmpUsername;
 
 		/// <summary>
-		/// RequiredFieldValidator1 control.
+		/// lblStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+		protected global::System.Web.UI.WebControls.Label lblStatus;
+
+		/// <summary>
+		/// rbStatus control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.RadioButtonList rbStatus;
 
 		/// <summary>
 		/// lblPassword control.
@@ -157,60 +157,6 @@ namespace CUBIC_CIBT_Project
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.Button btnGeneratePassword;
-
-		/// <summary>
-		/// RequiredFieldValidator2 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
-
-		/// <summary>
-		/// TextBox1 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox TextBox1;
-
-		/// <summary>
-		/// TextBox2 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox TextBox2;
-
-		/// <summary>
-		/// RadioQuickAccess control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RadioButtonList RadioQuickAccess;
-
-		/// <summary>
-		/// txtResultChkBoxVAccess control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtResultChkBoxVAccess;
-
-		/// <summary>
-		/// txtResultChkBoxAccess control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtResultChkBoxAccess;
 
 		/// <summary>
 		/// Label1 control.
@@ -303,57 +249,12 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.CheckBoxList ChkViewAccessReport;
 
 		/// <summary>
-		/// txtAutoNumber control.
+		/// BtnConfirmSave control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumber;
-
-		/// <summary>
-		/// txtAutoNumberIncreament control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtAutoNumberIncreament;
-
-		/// <summary>
-		/// txtRunningNo control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.TextBox txtRunningNo;
-
-		/// <summary>
-		/// DirectTarget control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.HtmlControls.HtmlAnchor DirectTarget;
-
-		/// <summary>
-		/// btnCreate control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Button btnCreate;
-
-		/// <summary>
-		/// ConfirmBtnCreate control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.Button ConfirmBtnCreate;
+		protected global::System.Web.UI.WebControls.Button BtnConfirmSave;
 	}
 }

@@ -33,22 +33,13 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.Label lblLoginNameTopNav;
 
 		/// <summary>
-		/// HPFrmAccessControl control.
+		/// HPFrmCustomerMaint control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPFrmAccessControl;
-
-		/// <summary>
-		/// HPFrmClientMaint control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPFrmClientMaint;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmCustomerMaint;
 
 		/// <summary>
 		/// HPFrmProjMaint control.
@@ -60,13 +51,13 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.HyperLink HPFrmProjMaint;
 
 		/// <summary>
-		/// HPFrmDocumentMaint control.
+		/// HPFrmAccessControl control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HyperLink HPFrmDocumentMaint;
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmAccessControl;
 
 		/// <summary>
 		/// HPFrmBankStateMaint control.
@@ -85,6 +76,33 @@ namespace CUBIC_CIBT_Project
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.HyperLink HPFrmInvMaint;
+
+		/// <summary>
+		/// HPFrmPoMaint control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmPoMaint;
+
+		/// <summary>
+		/// HPFrmDoMaint control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmDoMaint;
+
+		/// <summary>
+		/// HPFrmQoMaint control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.HyperLink HPFrmQoMaint;
 
 		/// <summary>
 		/// HPFrmProjReport control.

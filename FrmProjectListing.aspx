@@ -17,7 +17,28 @@
           font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
           min-width:140px;
       }*/
+
+		.row-link {
+			display: block;
+			width: 100%;
+			height: 100%;
+			text-align: left;
+		}
+
+			.row-link table {
+				width: 100%;
+			}
+
+				.row-link table tr td {
+					padding: 10px;
+				}
+
+			.row-link:hover {
+				background-color: #f0f0f0; /* Optional: Change background color on hover */
+			}
 	</style>
+
+
 
 
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -26,55 +47,55 @@
 	<script src="assets/demo/datatables-demo.min.js"></script>
 
 	<script>
-		function closeModal() {
-			$("#ModalMessage").hide();
-			$('#ErrorModalMessage').hide();
-			$('#ConfirmationModalMessage').hide();
-			$('#ModalConfirmation').hide();
-			$('.modal-backdrop').remove();
-			$(document.body).removeClass('modal-open');
-			document.body.style.overflow = "scroll";
-		}
-
-		function showModal(status, message) {
-			$("#ModalConfirmation").modal('hide');
-			var title = document.getElementById('MessageModalTitle');
-			var content = document.getElementById('MessageModalContent');
-			title.innerHTML = status;
-			content.innerHTML = message;
-			$("#ModalMessage").modal('show');
-			// Reinitiallize DataTable
-			$('#DocMTable').DataTable();
-		}
-
-		function showErrorModal(status, message) {
-			$("#ModalConfirmation").modal('hide');
-			var title = document.getElementById('ErrorModalTitle');
-			var content = document.getElementById('ErrorModalContent');
-			title.innerHTML = status;
-			content.innerHTML = message;
-			$("#ErrorModalMessage").modal('show');
-			// Reinitiallize DataTable
-			$('#DocMTable').DataTable();
-		}
-
-		document.title = "Bank Statement Maintenance";
-
+		document.title = "Project Listing Report";
 		$(document).ready(function () {
-			$('#DocMTable').DataTable()
-		});
+			var table = $('#ProjMTable').DataTable({
+				"paging": true,
+				"searching": true,
+				"info": true,
+				"responsive": true,
+			});
+			$("#FilterStatus").on("change", function () {
+				table.columns(3).search($(this).val()).draw();
+			});
 
-		$('#DocMTable').DataTable({
-			"paging": true,
-			"searching": true,
-			"info": true,
-		});
+			$('#filterDate').on('click', function () {
 
-		//$(document).click(function (e) {
-		//    if ($(e.target).is(#ModalMessage)) {
-		//        $('#ModalMessage').fadeOut(500);
-		//    }
-		//});
+				$.fn.dataTable.ext.search.push(
+					function (settings, data, dataIndex) {
+						var min = $('#DateFrom').val();
+						var max = $('#DateTo').val();
+						var date = data[2]; // Use data for the date column
+
+						// Check if both min and max have values
+						if (min && max) {
+							min = new Date(min);
+							min.setDate(min.getDate() - 1);
+							max = new Date(max);
+							var date = new Date(date);
+
+							// Ensure the Date is in range
+							var DateRangeValid = ((min <= date) && (max > date));
+							return DateRangeValid;
+						} else {
+							return true;
+						}
+					}
+				);
+				table.draw();
+
+			});
+
+		});
+		Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {
+			$('#BSMTable').DataTable({
+				"paging": true,
+				"searching": true,
+				"info": true,
+				"destroy": true
+			});
+			document.title = "Project Listing Report";
+		});
 
 	</script>
 
@@ -85,57 +106,87 @@
 	<asp:UpdatePanel ID="UpdatePanelLotInfor" runat="server">
 		<ContentTemplate>
 			<%--    This is another new design template--%>
-			<div class="container-fluid" runat="server" ID="V_ProjR">
+			<div class="container-fluid" runat="server" ID="V_ProjR" Visible="false">
 				<%-- Datagrid--%>
 				<!-- Page Heading --For Container untill card body-->
 				<h1 class="h3 mb-2 text-gray-800"></h1>
 				<p class="mb-4"></p>
 
-				<!-- DataTales Example -->
+				<!-- Project Listing Example -->
 				<div class="card shadow mb-4">
 					<div class="card-header py-3">
-						<h6 class="m-0 page-heading-cubic"><i class="fa fa-file"></i>&nbsp;&nbsp;Project Listing Table</h6>
+						<h6 class="m-0 page-heading-cubic"><i class="fa fa-file"></i>&nbsp;&nbsp;Project Listing </h6>
 					</div>
 					<div class="card-body">
-
 						<%--    add overflow so that when phone screen can see nicely--%>
 						<%--    <div style="overflow-x: scroll; height:100%; min-width:350px;" >--%>
-
-
-
 						<%-- <asp:Timer ID="TimerRefreshList" runat="server" Interval="3000" OnTick="TimerRefreshList_Tick"></asp:Timer>--%>
-
 						<div class="row row-margin-btm-cubic">
 							<div class="col">
 								<div class="col-md-12">
 									<div class="table-responsive">
 										<main>
 											<div class="card-body">
+
 												<div style="overflow-x: scroll; height: 100%; min-width: 350px;">
 													<div class="datatable">
 														<div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
-															<asp:Repeater ID="DocMRepeater" runat="server">
+															<asp:Repeater ID="ProjMRepeater" runat="server">
 																<HeaderTemplate>
-																	<table id="DocMTable" class="table table-bordered table-hover table-striped mydatatable " style="width: 100%">
-																		<thead class="table table-success">
-																			<th>Document No.</th>
-																			<th>Document Name</th>
-																			<th>Revision No</th>
-																			<th>Status</th>
-																			<th>Modified By</th>
-																			<th>Modified Date</th>
+																	<%-- Filter --%>
+																	<div class="row mb-3">
+																		<!-- Status Filter -->
+																		<div class="col-md-3">
+																			<label for="FilterStatus" class="form-label">Status:</label>
+																			<select id="FilterStatus" class="form-select">
+																				<option value="">All</option>
+																				<option value="O">Opening</option>
+																				<option value="C">Closed</option>
+																			</select>
+																		</div>
 
+																		<!-- Date From -->
+																		<div class="col-md-4">
+																			<label for="DateFrom" class="form-label">Date From:</label>
+																			<input id="DateFrom" type="date" class="form-control" />
+																		</div>
+
+																		<!-- Date To -->
+																		<div class="col-md-4">
+																			<label for="DateTo" class="form-label">Date To:</label>
+																			<input id="DateTo" type="date" class="form-control" />
+																		</div>
+
+																		<!-- Filter Button -->
+																		<div class="col-md-1 align-self-end">
+																			<input id="filterDate" type="button" class="btn btn-primary w-100" value="Filter" />
+																		</div>
+																	</div>
+
+																	<table id="ProjMTable" class="table table-bordered table-hover table-striped" style="width: 100%">
+																		<thead class="table table-success">
+																			<th>Project No</th>
+																			<th>Project Name</th>
+																			<th>Date</th>
+																			<th>Status</th>
+																			<th></th>
 																		</thead>
 																</HeaderTemplate>
-
 																<ItemTemplate>
-																	<tr>
-																		<td><%#Eval("DOC_CODE") %></td>
-																		<td><%#Eval("DOC_NAME") %></td>
-																		<td><%#Eval("REVISION_NO") %></td>
-																		<td><%#Eval("DOC_STATUS") %></td>
-																		<td><%#Eval("MODIFIED_BY") %></td>
-																		<td><%#Eval("MODIFIED_DATE") %></td>
+																	<tr onclick="window.location.href='FrmProjectListingDet.aspx?ProjNo=<%#Eval("PROJ_NO") %>'">
+																		<td><%#Eval("PROJ_NO") %></td>
+																		<td><%#Eval("PROJ_NAME") %></td>
+																		<td><%#Eval("PROJ_DATE","{0:yyyy/MM/dd}") %></td>
+																		<td><%#Eval("PROJ_STATUS") %></td>
+																		<td>
+																			<button type="button" style="height: 20px; width: 20px; padding: 0;" class="btn btn-muted rounded-circle" data-bs-toggle="dropdown" onclick="event.stopPropagation();"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+																			<ul class="dropdown-menu">
+																				<li>
+																					<asp:Button class="dropdown-item" ID="DeleteProject" runat="server" Text="Delete" CommandArgument='<%# Eval("PROJ_NO") %>' OnCLick="DeleteProject_Click" /></li>
+																				<li>
+																					<asp:Button class="dropdown-item" ID="EditProject" runat="server" Text="Edit" CommandArgument='<%# Eval("PROJ_NO") %>' OnClick="EditProject_Click" /></li>
+																			</ul>
+																		</td>
 																	</tr>
 																</ItemTemplate>
 																<FooterTemplate>
@@ -147,70 +198,10 @@
 
 												</div>
 											</div>
-											<%-- </div>--%>
 										</main>
-										<%--   <br />--%>
 									</div>
 								</div>
 							</div>
-
-							<!-- Modal-->
-							<!-- Confirmation Modal-->
-							<div class="modal fade" id="ModalConfirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header Modal-Confirmation-Cubic">
-											<h5 class="modal-title" id="ConfirmationModalTitle">Confirmation</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">×</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ConfirmationModalContent">Are You Sure Want To Save?</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" data-bs-dismiss="modal">Cancel</button>
-											<asp:Button ID="BtnConfirmSave" runat="server" class="btn-save" Text="Save" OnClick="BtnConfirmSave_Click" />
-											<%--<asp:Button ID="btnSave" runat="server" class="btn btn-primary" Text="Add" OnClick="btnSave_Click"/>--%>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Success/Fail Message Modal-->
-							<div class="modal fade" id="ModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header">
-											<h5 class="modal-title" id="MessageModalTitle">Success</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">x</span>
-											</button>
-										</div>
-										<div class="modal-body" id="MessageModalContent"></div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Fail Message Modal -->
-							<div class="modal fade" id="ErrorModalMessage" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-								<div class="modal-dialog" role="document">
-									<div class="modal-content">
-										<div class="modal-header Modal-Error-Cubic">
-											<h5 class="modal-title" id="ErrorModalTitle">Error</h5>
-											<button class="close" type="button" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true" hidden>
-												<span aria-hidden="true">x</span>
-											</button>
-										</div>
-										<div class="modal-body" id="ErrorModalContent">Please fill in required field</div>
-										<div class="modal-footer">
-											<button class="btn-cancel" type="button" onclick="closeModal()">Close</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<%-- Error --%>
 						</div>
 					</div>
 				</div>
