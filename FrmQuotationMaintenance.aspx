@@ -108,7 +108,7 @@
 					showErrorModal('Failed', 'Please enter the Quotation Date.');
 					return;
 				}
-				
+
 				//Validate Revision No length
 				if (ddlDOMode === "C" && RevisionNo.length > 20) {
 					showErrorModal('Failed', 'Revision No should be 20 characters or fewer.');
@@ -286,7 +286,6 @@
 								<asp:FileUpload ID="ChooseFileUpload" runat="server" Visible="false" />
 							</div>
 							<div class="form-group col-md-2">
-					
 							</div>
 							<div class="form-group col-md-4">
 							</div>
@@ -387,8 +386,10 @@
 																				<li>
 																					<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
 																				<li>
-																					<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
-																			</ul>
+
+																					<asp:HyperLink class="dropdown-item" ID="DownloadDoc" runat="server" NavigateUrl='<%# F_GetQuotationFileUrl(Eval("DOC_NO").ToString()) %>' Text="View File" Target="_blank" Visible='<%# !F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'></asp:HyperLink>
+																					<span class="dropdown-item-text text-muted" runat="server" Visible='<%# F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'>No File Available</span>
+																				</li>
 																		</td>
 																	</tr>
 																</ItemTemplate>

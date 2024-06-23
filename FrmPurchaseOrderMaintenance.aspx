@@ -96,7 +96,7 @@
 					showErrorModal('Failed', 'Kindly select the Payment Method.');
 					return;
 				}
-		
+
 				// Validate Purchase Order Date
 				if (!PurchaseOrderDate || PurchaseOrderDate.trim() === "") {
 					showErrorModal('Failed', 'Please enter the Purchase Order Date.');
@@ -108,7 +108,7 @@
 					return;
 				}
 				//Validate Total Paid Amount (Can't be negative value)
-				if (TotalPaidAmount > 0) {
+				if (TotalPaidAmount < 0) {
 					showErrorModal('Failed', 'Total Paid Amount should be 0 or above.');
 					return;
 				}
@@ -243,7 +243,6 @@
 								</asp:DropDownList>
 							</div>
 							<div class="form-group col-md-2">
-
 							</div>
 						</div>
 
@@ -281,7 +280,6 @@
 								<asp:FileUpload ID="ChooseFileUpload" runat="server" Visible="false" />
 							</div>
 							<div class="form-group col-md-2">
-								
 							</div>
 						</div>
 						<br />
@@ -377,7 +375,10 @@
 																				<li>
 																					<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
 																				<li>
-																					<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
+
+																					<asp:HyperLink class="dropdown-item" ID="DownloadDoc" runat="server" NavigateUrl='<%# F_GetPurchaseOrderFileUrl(Eval("DOC_NO").ToString()) %>' Text="View File" Target="_blank" Visible='<%# !F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'></asp:HyperLink>
+																					<span class="dropdown-item-text text-muted" runat="server" Visible='<%# F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'>No File Available</span>
+																				</li>
 																			</ul>
 																		</td>
 																	</tr>

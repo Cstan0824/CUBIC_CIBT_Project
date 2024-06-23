@@ -154,8 +154,8 @@
 				minDate.setFullYear(minDate.getFullYear() - 100);
 
 				// Validate the range (100 years ago < Arrival Date  <= Current Date)
-				if (inputArrivalDate > currDate || inputArrivalDate < minDate) {
-					showErrorModal('Failed', 'The Arrival Date must be between today and 100 years ago.');
+				if (inputArrivalDate < currDate) {
+					showErrorModal('Failed', 'The Arrival Date must be today or after.');
 					return;
 				}
 
@@ -472,7 +472,11 @@
 																				<li>
 																					<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
 																				<li>
-																					<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
+
+																					<asp:HyperLink class="dropdown-item" ID="DownloadDoc" runat="server" NavigateUrl='<%# F_GetDeliveryOrderFileUrl(Eval("DOC_NO").ToString()) %>' Text="View File" Target="_blank" Visible='<%# !F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'></asp:HyperLink>
+																					<span class="dropdown-item-text text-muted" runat="server" Visible='<%# F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'>No File Available</span>
+
+																				</li>
 																			</ul>
 																		</td>
 																	</tr>

@@ -114,9 +114,9 @@
 					showErrorModal('Failed', 'Please enter the Invoice Date.');
 					return;
 				}
-				
+
 				//Validate Total Paid Amount (Can't be negative value)
-				if (ToPaidAmount > 0) {
+				if (ToPaidAmount < 0) {
 					showErrorModal('Failed', 'Total Paid Amount should be 0 or above.');
 					return;
 				}
@@ -250,7 +250,6 @@
 								</asp:DropDownList>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:CompareValidator ID="CompareValidator3" runat="server" Operator="Equal" ControlToValidate="DrpListProjectCode" ValueToCompare="" Errormessage="Please select a Project" ForeColor="Red" BorderStyle="None" Display="Dynamic">*</asp:CompareValidator>
 							</div>
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblRevisionNo" runat="server" Text="Invoice Revision No" class="input-label-cubic"></asp:Label>
@@ -259,8 +258,6 @@
 								<asp:TextBox runat="server" ID="txtRevisionNo" class="form-control input-textbox-cubic-16" ValidateRequestMode="Enabled" ReadOnly="true"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:CompareValidator ID="CompareValidator5" runat="server" Operator="Equal" ControlToValidate="DrpListRevisionNo" ValueToCompare="" Errormessage="Please select a Revision No" ForeColor="Red" BorderStyle="None" Display="Dynamic">*</asp:CompareValidator>
-								<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtRevisionNo" ErrorMessage="Please Enter the Revision No" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 						</div>
 						<%--  row Invoice Date/Paid Amount --%>
@@ -270,14 +267,12 @@
 								<asp:TextBox ID="txtInvoiceDate" ReadOnly="true" ClientIDMode="Static" runat="server" TextMode="Date" class="form-control input-textbox-cubic-16" AutoPostBack="false"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtInvoiceDate" ErrorMessage="Please Enter Invoice Date" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 							<div class="form-group col-md-4">
 								<asp:Label ID="lblPaidAmount" runat="server" Text="Paid Amount" class="input-label-cubic"></asp:Label>
 								<asp:TextBox ID="txtPaidAmount" placeholder="Paid Amount" runat="server" ReadOnly="true" class="form-control input-textbox-cubic-16"></asp:TextBox>
 							</div>
 							<div class="form-group col-md-2">
-								<asp:RequiredFieldValidator ID="RequiredFieldValidatorPaidAmount" runat="server" ControlToValidate="txtPaidAmount" ErrorMessage="Please Enter Paid Amount" ForeColor="Red" BorderStyle="None">*</asp:RequiredFieldValidator>
 							</div>
 
 						</div>
@@ -297,9 +292,6 @@
 								<asp:FileUpload ID="ChooseFileUpload" runat="server" Visible="false" />
 							</div>
 							<div class="form-group col-md-2">
-								<asp:RegularExpressionValidator ID="FileUploadValidator" runat="server" ControlToValidate="ChooseFileUpload"
-									ErrorMessage="Please upload only Excel or pdf files." ValidationExpression="^.*\.(xls|xlsx|pdf)$"
-									ForeColor="Red" Display="Dynamic" />
 							</div>
 						</div>
 
@@ -400,7 +392,11 @@
 																				<li>
 																					<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
 																				<li>
-																					<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
+
+																					<asp:HyperLink class="dropdown-item" ID="DownloadDoc" runat="server" NavigateUrl='<%# F_GetInvoiceFileUrl(Eval("DOC_NO").ToString()) %>' Text="View File" Target="_blank" Visible='<%# !F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'></asp:HyperLink>
+																					<span class="dropdown-item-text text-muted" runat="server" Visible='<%# F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'>No File Available</span>
+
+																				</li>
 																			</ul>
 																		</td>
 																	</tr>

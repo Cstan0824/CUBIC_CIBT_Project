@@ -87,15 +87,6 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.DropDownList DrpListProjectCode;
 
 		/// <summary>
-		/// CompareValidator3 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator3;
-
-		/// <summary>
 		/// lblRevisionNo control.
 		/// </summary>
 		/// <remarks>
@@ -123,24 +114,6 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.TextBox txtRevisionNo;
 
 		/// <summary>
-		/// CompareValidator5 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.CompareValidator CompareValidator5;
-
-		/// <summary>
-		/// RequiredFieldValidator1 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
-
-		/// <summary>
 		/// lblInvoiceDate control.
 		/// </summary>
 		/// <remarks>
@@ -159,15 +132,6 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.TextBox txtInvoiceDate;
 
 		/// <summary>
-		/// RequiredFieldValidator3 control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator3;
-
-		/// <summary>
 		/// lblPaidAmount control.
 		/// </summary>
 		/// <remarks>
@@ -184,15 +148,6 @@ namespace CUBIC_CIBT_Project
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.TextBox txtPaidAmount;
-
-		/// <summary>
-		/// RequiredFieldValidatorPaidAmount control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorPaidAmount;
 
 		/// <summary>
 		/// lblStatus control.
@@ -229,15 +184,6 @@ namespace CUBIC_CIBT_Project
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
 		protected global::System.Web.UI.WebControls.FileUpload ChooseFileUpload;
-
-		/// <summary>
-		/// FileUploadValidator control.
-		/// </summary>
-		/// <remarks>
-		/// Auto-generated field.
-		/// To modify move field declaration from designer file to code-behind file.
-		/// </remarks>
-		protected global::System.Web.UI.WebControls.RegularExpressionValidator FileUploadValidator;
 
 		/// <summary>
 		/// V_InvM control.

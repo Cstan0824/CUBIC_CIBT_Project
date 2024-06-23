@@ -222,7 +222,9 @@ namespace CUBIC_CIBT_Project
 				Cust_Status = rbStatus.SelectedValue,
 				Cust_BU = tempBU,
 				Cust_Created_By = G_UserLogin,
-				Cust_Modified_By = G_UserLogin
+				Cust_Modified_By = G_UserLogin,
+				Cust_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
+				Cust_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
 
 			TableDetails tableDetails = F_GetTableDetails(m_Customer);

@@ -215,7 +215,9 @@ namespace CUBIC_CIBT_Project
 				Emp_Status = char.Parse(rbStatus.SelectedValue),
 				Emp_BU = tempBU,
 				Emp_IsLogIn = 'N',
+				Emp_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd"),
 				Emp_Modified_By = G_UserLogin,
+				Emp_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
 				Emp_Created_By = G_UserLogin,
 			};
 			TableDetails tableDetails = F_GetTableDetails(m_Employee);

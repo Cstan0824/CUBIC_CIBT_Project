@@ -160,16 +160,17 @@ namespace CUBIC_CIBT_Project
 			lblProjectDate.Text = DateTime.Parse(row["PROJ_DATE"]?.ToString()).ToString("yyyy-MM-dd");
 			lblProjectName.Text = row["PROJ_NAME"]?.ToString();
 			lblProjectNo.Text = row["PROJ_NO"]?.ToString();
-			lblReceiableAmount.Text = $"RM{ReceiableAmount}";
-			lblReceivedAmount.Text = $"RM{ReceivedAmount}";
+			lblReceiableAmount.Text = $"RM{ReceiableAmount.ToString(CultureInfo.InvariantCulture)}";
+			lblReceivedAmount.Text = $"RM{ReceivedAmount.ToString(CultureInfo.InvariantCulture)}";
 			lblCustomerName.Text = row["CUST_NAME"]?.ToString();
 			lblCustomerPhoneNumber.Text = row["CUST_PHONE_NUMBER"]?.ToString();
 			lblProjectCreatedBy.Text = row["PROJ_CREATED_BY"]?.ToString();
 			lblProjectCreatedDate.Text = DateTime.Parse(row["PROJ_CREATED_DATE"]?.ToString()).ToString("yyyy-MM-dd");
 
-			hiddProjStatus.Value = row["PROJ_STATUS"]?.ToString();
 			hiddReceivedAmount.Value = ReceivedAmount.ToString();
 			hiddTotalPaidAmount.Value = TotalPaidAmount.ToString();
+
+			ProjStatus.Style["color"] = row["PROJ_STATUS"]?.ToString() == "O" ? "green" : "red";
 		}
 
 		/// <summary>
@@ -187,7 +188,7 @@ namespace CUBIC_CIBT_Project
 				return 0;
 			}
 			DataRow row = dataTable.Rows[0];
-			decimal ReceiableAmount = decimal.Parse(row["INV_BALANCE_AMOUNT"]?.ToString(), CultureInfo.InvariantCulture);
+			decimal ReceiableAmount = decimal.Parse(row["INV_BALANCE_AMOUNT"]?.ToString());
 			return ReceiableAmount;
 		}
 
@@ -206,7 +207,7 @@ namespace CUBIC_CIBT_Project
 				return 0;
 			}
 			DataRow row = dataTable.Rows[0];
-			decimal TotalPaidAmount = decimal.Parse(row["PO_TOTAL_PAID_AMOUNT"]?.ToString(), CultureInfo.InvariantCulture);
+			decimal TotalPaidAmount = decimal.Parse(row["PO_TOTAL_PAID_AMOUNT"]?.ToString());
 			return TotalPaidAmount;
 		}
 

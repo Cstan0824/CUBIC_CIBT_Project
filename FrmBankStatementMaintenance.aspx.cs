@@ -7,6 +7,8 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Mime;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI;
@@ -177,7 +179,9 @@ namespace CUBIC_CIBT_Project
 				Doc_Status = char.Parse(rbStatus.SelectedValue),
 				Doc_BU = "CS",
 				Doc_Created_By = G_UserLogin,
-				Doc_Modified_By = G_UserLogin
+				Doc_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
+				Doc_Modified_By = G_UserLogin,
+				Doc_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
 
 			if (ChooseFileUpload.HasFile)
@@ -230,6 +234,9 @@ namespace CUBIC_CIBT_Project
 
 			if (ChooseFileUpload.HasFile)
 			{
+				//Delete the file that upload at this doc No recently
+				F_CheckFileExistence(DrpListRemark.SelectedValue);
+
 				// Create the Server Folder Path
 				string UploadPath = "~/Documents/Bank Statement/";
 				string serverFolderPath = Server.MapPath(UploadPath);
@@ -292,8 +299,8 @@ namespace CUBIC_CIBT_Project
 			ddlBankStateMode_SelectedIndexChanged(ddlBankStateMode, EventArgs.Empty);
 
 			Button btn = (Button)sender;
-
-			DataTable dataTable = F_ReceiveBSData(btn.CommandArgument);
+			string WhereClause = $"WHERE [Obj].[DOC_NO] = '{btn.CommandArgument}' ";
+			DataTable dataTable = F_ReceiveBSData(WhereClause);
 			if (dataTable.Rows.Count == 0)
 			{
 				GF_ReturnErrorMessage("No Revision Found", this.Page, this.GetType());
@@ -307,44 +314,17 @@ namespace CUBIC_CIBT_Project
 			DrpListRemark.SelectedValue = row["BS_NO"]?.ToString();
 		}
 
-		///<summary>
-		/// Event handler for the Download button click, allows user to download the selected Document file.
-		///</summary>
-		///<param name="sender">The object that raises the event.</param>
-		///<param name="e">The event arguments.</param>
-		protected void DownloadDoc_Click(object sender, EventArgs e)
-		{
-			Button btn = (Button)sender;
-			DataTable dataTable = F_ReceiveBSData(btn.CommandArgument);
-			if (dataTable.Rows.Count == 0)
-			{
-				GF_ReturnErrorMessage("No Revision Found", this.Page, this.GetType());
-				return;
-			}
-			DataRow row = dataTable.Rows[0];
-			
-			string FileName = row["DOC_UPL_FILE_NAME"]?.ToString();
-			string VirtualPath = Path.Combine(row["DOC_UPL_PATH"]?.ToString(), FileName);
-			string AbsolutePath = Server.MapPath(VirtualPath);
 
-			byte[] fileBytes = File.ReadAllBytes(AbsolutePath);
-			Response.Clear();
-			Response.ContentType = "application/octet-stream";
-			Response.AddHeader("Content-Disposition", "attachment; filename=" + FileName);
-			Response.BinaryWrite(fileBytes);
-			Response.End();
-		}
 
 		///<summary>
 		/// Retrieves Bank Statement data based on the provided Document number.
 		///</summary>
-		///<param name="_DocNo">The Document number used to fetch Bank Statement data.</param>
+		///<param name="_WhereClause">The Document number used to fetch Bank Statement data.</param>
 		///<returns>A DataTable containing Bank Statement data.</returns>
-		private DataTable F_ReceiveBSData(string _DocNo)
+		private DataTable F_ReceiveBSData(string _WhereClause)
 		{
-			string WhereClause = $"WHERE [Obj].[DOC_NO] = '{_DocNo}' ";
 			string JoinClause = "JOIN [dbo].[M_BANK_STATEMENT] BS ON [Obj].[DOC_REMARK] = [BS].[BS_NO]";
-			TableDetails tableDetails = F_GetTableDetails(new T_Document(), $"{JoinClause} {WhereClause}");
+			TableDetails tableDetails = F_GetTableDetails(new T_Document(), $"{JoinClause} {_WhereClause}");
 			return DB_ReadData(tableDetails);
 		}
 
@@ -355,11 +335,63 @@ namespace CUBIC_CIBT_Project
 		{
 			string JoinClause = "JOIN [dbo].[T_DOCUMENT] Doc ON [Doc].[DOC_REMARK] = [Obj].[BS_NO]";
 			string WhereClause = "WHERE [Doc].[DOC_TYPE] = 'BS' AND [Doc].[DOC_STATUS] != 'X' ";
-			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], ";
+			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS],[Doc].[DOC_UPL_PATH], ";
 			SelectData += "[Obj].[BS_NO], [Obj].[BS_TYPE_ID] ";
 			DataTable dataTable = DB_ReadData(F_GetTableDetails(new M_Bank_Statement(), $"{JoinClause} {WhereClause}"), SelectData);
 			DocMRepeater.DataSource = dataTable;
 			DocMRepeater.DataBind();
+		}
+
+		/// <summary>
+		/// Retrieves the URL of a bank statement file based on the document number.
+		/// </summary>
+		/// <param name="_DocNo">Document number used to retrieve the bank statement file information.</param>
+		/// <returns>
+		/// The URL of the bank statement file if found; otherwise, returns "#" indicating a dummy link.
+		/// </returns>
+		protected string F_GetBankStatementFileUrl(string _DocNo)
+		{
+			string WhereClause = $"WHERE [Obj].[DOC_NO] = '{_DocNo}' ";
+			DataTable dataTable = F_ReceiveBSData(WhereClause);
+			// Return a dummy link if the file is not found
+			if (dataTable == null)
+			{
+				return "#";
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return "#";
+			}
+			DataRow row = dataTable.Rows[0];
+			string fileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+			string virtualPath = Path.Combine(row["DOC_UPL_PATH"]?.ToString(), fileName);
+			return ResolveUrl(virtualPath);
+		}
+
+		/// <summary>
+		/// Determines whether to show a link based on the provided document upload path.
+		/// </summary>
+		/// <param name="_DocUplPath">The document upload path to evaluate.</param>
+		/// <returns>True if the document upload path is null or empty; otherwise, false.</returns>
+		protected bool F_ShowLink(string _DocUplPath)
+		{
+			return string.IsNullOrEmpty(_DocUplPath);
+		}
+
+		///<summary>
+		/// Retrieves the Bank Type based on the provided Bank Statement Type ID.
+		///</summary>
+		///<param name="_BSTypeID">The Bank Statement Type ID used to fetch Bank Type.</param>
+		///<returns>The Bank Type as a string.</returns>
+		protected string F_DisplayBankType(int _BSTypeID)
+		{
+			DataTable dataTable = DB_ReadData(F_GetTableDetails(new M_BS_Type()));
+			if (dataTable.Rows.Count == 0)
+			{
+				return null;
+			}
+			DataRow row = dataTable.Rows[_BSTypeID - 1];
+			return row["BANK_TYPE"]?.ToString();
 		}
 
 		/// <summary>
@@ -380,21 +412,37 @@ namespace CUBIC_CIBT_Project
 			return primaryCode;
 		}
 
-		///<summary>
-		/// Retrieves the Bank Type based on the provided Bank Statement Type ID.
-		///</summary>
-		///<param name="_BSTypeID">The Bank Statement Type ID used to fetch Bank Type.</param>
-		///<returns>The Bank Type as a string.</returns>
-		public string F_DisplayBankType(int _BSTypeID)
+		/// <summary>
+		/// Checks the existence of a file associated with the given document Remark.
+		/// Deletes the file from the server if it exists.
+		/// </summary>
+		/// <param name="_RevisionNo">The document Remark to check.</param>
+		private void F_CheckFileExistence(string _Remark)
 		{
-			DataTable dataTable = DB_ReadData(F_GetTableDetails(new M_BS_Type()));
+			string WhereClause = $"[Obj].[DOC_REMARK] = '{_Remark}'";
+			DataTable dataTable = F_ReceiveBSData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+			}
 			if (dataTable.Rows.Count == 0)
 			{
-				return null;
+				return;
 			}
-			DataRow row = dataTable.Rows[_BSTypeID - 1];
-			return row["BANK_TYPE"]?.ToString();
+			DataRow row = dataTable.Rows[0];
+			string UplPath = row["DOC_UPL_PATH"]?.ToString();
+			string FileName = row["DOC_UPL_FILE_NAME"].ToString();
+			string VirtualPath = Path.Combine(UplPath, FileName);
+			string AbslutePath = Server.MapPath(VirtualPath);
+			if (string.IsNullOrEmpty(UplPath))
+			{
+				return;
+			}
+			if (!File.Exists(AbslutePath))
+			{
+				return;
+			}
+			GF_DeleteFileFromServer(AbslutePath);
 		}
-
 	}
 }

@@ -58,8 +58,34 @@
 			content.innerHTML = message;
 			$("#ErrorModalMessage").modal('show');
 		}
+
+		function displayProjectDetails() {
+			// Retrieve values using jQuery
+			var totalPaidAmountStr = $('#<%= hiddTotalPaidAmount.ClientID %>').val();
+			var receivedAmountStr = $('#<%= hiddReceivedAmount.ClientID %>').val();
+
+			// Set title for Total Paid Amount
+			$("#TotalPaidAmount").attr("title", "RM" + totalPaidAmountStr);
+
+			// Parse the amounts
+			var totalPaidAmount = parseFloat(totalPaidAmountStr);
+			var receivedAmount = parseFloat(receivedAmountStr);
+
+			// Calculate Receivable Amount
+			var receivableAmount = totalPaidAmount - receivedAmount;
+
+			// Calculate Percentages
+			var receivablePercentage = totalPaidAmount !== 0 ? (receivableAmount / totalPaidAmount) * 100 : 0;
+			var receivedPercentage = totalPaidAmount !== 0 ? (receivedAmount / totalPaidAmount) * 100 : 0;
+
+			// Update progress bars
+			$("#progress-ReceivableAmount").css("width", receivablePercentage + "%");
+			$("#progress-ReceivedAmount").css("width", receivedPercentage + "%");
+		}
+
 		document.title = "Project Listing Details Maintenance";
 
+		//Data Table Filter
 		$(document).ready(function () {
 			var table = $('#DocMTable').DataTable({
 				"paging": true,
@@ -95,43 +121,11 @@
 					}
 				);
 				table.draw();
+
+				displayProjectDetails();
 			});
 
-			// Retrieve values using jQuery
-			var totalPaidAmountStr = $('#<%= hiddTotalPaidAmount.ClientID %>').val();
-			var receivedAmountStr = $('#<%= hiddReceivedAmount.ClientID %>').val();
-			var projStatus = $('#<%= hiddProjStatus.ClientID %>').val();
 
-			console.log("ProjStatus: ", projStatus);
-			console.log("Total Paid Amount: ", totalPaidAmountStr);
-			console.log("Received Amount: ", receivedAmountStr);
-
-			
-
-			// Set title for Total Paid Amount
-			$("#TotalPaidAmount").attr("title", "RM" + totalPaidAmountStr);
-
-			// Parse the amounts
-			var totalPaidAmount = parseFloat(totalPaidAmountStr);
-			var receivedAmount = parseFloat(receivedAmountStr);
-
-			console.log("Parsed Total Paid Amount: ", totalPaidAmount);
-			console.log("Parsed Received Amount: ", receivedAmount);
-
-			// Calculate Receivable Amount
-			var receivableAmount = totalPaidAmount - receivedAmount;
-			console.log("Receivable Amount: ", receivableAmount);
-
-			// Calculate Percentages
-			var receivablePercentage = totalPaidAmount !== 0 ? (receivableAmount / totalPaidAmount) * 100 : 0;
-			var receivedPercentage = totalPaidAmount !== 0 ? (receivedAmount / totalPaidAmount) * 100 : 0;
-
-			console.log("Receivable Percentage: ", receivablePercentage);
-			console.log("Received Percentage: ", receivedPercentage);
-
-			// Update progress bars
-			$("#progress-ReceivableAmount").css("width", receivablePercentage + "%");
-			$("#progress-ReceivedAmount").css("width", receivedPercentage + "%");
 		});
 
 		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -147,13 +141,11 @@
 				"destroy": true
 			});
 			document.title = "Project Listing Details Maintenance";
-			// Set project status color
-			var projStatus = $('#<%= hiddProjStatus.ClientID %>').val();
-			var statusClass = projStatus == "O" ? "text-success" : "text-danger";
-			$("#ProjStatus").removeClass("text-success text-danger").addClass(statusClass);
+
+
 		});
 
-		
+
 	</script>
 
 
@@ -192,19 +184,18 @@
 																		<asp:Label ID="lblProjectName" runat="server" Text="" class="sidenav-footer-title"></asp:Label></strong> - <small class="text-muted">
 																			<asp:Label ID="lblProjectNo" runat="server" Text="" class="sidenav-footer-title"></asp:Label></small>
 																</div>
-																<asp:HiddenField runat="server" ID="hiddProjStatus" />
-																<div class="col-md-1 my-2 float-right"><i class="fa-solid fa-circle" id="ProjStatus"></i></div>
+																<div class="col-md-1 my-2 float-right"><i class="fa-solid fa-circle" ID="ProjStatus" runat="server"></i></div>
 															</div>
 															<%-- ProjDate --%>
 															<div class="card-text row">
-																<div class="col-md-6 my-3">
+																<div class="col-md-8 my-3">
 																	Project Date:
 																	<asp:Label ID="lblProjectDate" runat="server" Text="" class="sidenav-footer-title"></asp:Label>
 																</div>
 															</div>
 															<%-- CustName --%>
 															<div class="card-text row">
-																<div class="col-md-6">
+																<div class="col-md-8">
 																	Customer:
 																	<asp:Label ID="lblCustomerName" runat="server" Text="" class="sidenav-footer-title"></asp:Label>
 																	<span class="text-muted">(<asp:Label ID="lblCustomerPhoneNumber" runat="server" Text="" class="sidenav-footer-title"></asp:Label>)</span>
@@ -264,7 +255,7 @@
 																</div>
 															</div>
 
-															
+
 														</div>
 													</div>
 												</div>
@@ -346,8 +337,6 @@
 														<asp:Button class="dropdown-item" ID="DeleteDoc" runat="server" Text="Delete" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DeleteDoc_Click" /></li>
 													<li>
 														<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
-													<li>
-														<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
 												</ul>
 											</td>
 										</tr>

@@ -101,12 +101,12 @@ namespace CUBIC_CIBT_Project
 		protected void BtnConfirmSave_Click(object sender, EventArgs e)
 		{
 			string FailedMessage = "";
-			if(!F_CheckRevisionNoExistence(out FailedMessage))
+			if (!F_CheckRevisionNoExistence(out FailedMessage))
 			{
 				ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "Modal_Failed", "closeModal(); showErrorModal('Failed', '" + FailedMessage + "');", true);
 				return;
 			}
-			if(!F_CheckBalanceAmount(out FailedMessage))
+			if (!F_CheckBalanceAmount(out FailedMessage))
 			{
 				ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "Modal_Failed", "closeModal(); showErrorModal('Failed', '" + FailedMessage + "');", true);
 				return;
@@ -184,6 +184,9 @@ namespace CUBIC_CIBT_Project
 			};
 			if (ChooseFileUpload.HasFile)
 			{
+				//Delete the file that upload at this doc No recently
+				F_CheckFileExistence(DrpListRevisionNo.SelectedValue);
+
 				// Create the Server Folder Path
 				string UploadPath = "~/Documents/Invoice/";
 				string serverFolderPath = Server.MapPath(UploadPath);
@@ -237,7 +240,9 @@ namespace CUBIC_CIBT_Project
 				Doc_Status = char.Parse(rbStatus.SelectedValue),
 				Doc_BU = "CS",
 				Doc_Created_By = G_UserLogin,
-				Doc_Modified_By = G_UserLogin
+				Doc_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
+				Doc_Modified_By = G_UserLogin,
+				Doc_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
 			if (ChooseFileUpload.HasFile)
 			{
@@ -314,7 +319,7 @@ namespace CUBIC_CIBT_Project
 		{
 			string WhereClause = "WHERE [Doc].[DOC_TYPE] = 'INV' AND [Doc].[DOC_STATUS] != 'X' ";
 			string JoinClause = "JOIN [dbo].[T_DOCUMENT] Doc ON [Doc].[DOC_REMARK] = [Obj].[INV_NO]";
-			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_REVISION_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], ";
+			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_REVISION_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], [Doc].[DOC_UPL_PATH], ";
 			SelectData += "[Obj].[PROJ_NO], [Obj].[INV_NO] ";
 			DataTable dataTable = DB_ReadData(F_GetTableDetails(new M_Invoice(), $"{JoinClause} {WhereClause}"), SelectData);
 			INVMRepeater.DataSource = dataTable;
@@ -346,7 +351,12 @@ namespace CUBIC_CIBT_Project
 		{
 			Button btn = (Button)sender;
 			string WhereClause = $"WHERE [DOC_NO] = '{btn.CommandArgument}' ";
-			DataTable dataTable = DB_ReadData(F_GetTableDetails(new T_Document(), WhereClause));
+
+			DataTable dataTable = F_ReceiveINVData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+			}
 			if (dataTable.Rows.Count == 0)
 			{
 				return;
@@ -361,12 +371,85 @@ namespace CUBIC_CIBT_Project
 		}
 
 		///<summary>
-		/// Event handler for the Download button click, allows user to download the selected Document file.
+		/// Retrieves Invoice data based on the provided Document number.
 		///</summary>
-		///<param name="sender">The object that raises the event.</param>
-		///<param name="e">The event arguments.</param>
-		protected void DownloadDoc_Click(object sender, EventArgs e)
+		///<param name="_WhereClause">The Document number used to fetch Invoice data.</param>
+		///<returns>A DataTable containing Invoice data.</returns>
+		private DataTable F_ReceiveINVData(string _WhereClause)
 		{
+			TableDetails tableDetails = F_GetTableDetails(new T_Document(), _WhereClause);
+			return DB_ReadData(tableDetails);
+		}
+
+		/// <summary>
+		/// Retrieves the URL of a Invoice file based on the document number.
+		/// </summary>
+		/// <param name="_DocNo">Document number used to retrieve the Invoice file information.</param>
+		/// <returns>
+		/// The URL of the Invoice file if found; otherwise, returns "#" indicating a dummy link.
+		/// </returns>
+		protected string F_GetInvoiceFileUrl(string _DocNo)
+		{
+			string WhereClause = $"WHERE [DOC_NO] = '{_DocNo}' ";
+
+			DataTable dataTable = F_ReceiveINVData(WhereClause);
+			// Return a dummy link if the file is not found
+			if (dataTable == null)
+			{
+				return "#";
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return "#";
+			}
+			DataRow row = dataTable.Rows[0];
+			string fileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+			string virtualPath = Path.Combine(row["DOC_UPL_PATH"]?.ToString(), fileName);
+			return ResolveUrl(virtualPath);
+		}
+
+		/// <summary>
+		/// Determines whether to show a link based on the provided document upload path.
+		/// </summary>
+		/// <param name="_DocUplPath">The document upload path to evaluate.</param>
+		/// <returns>True if the document upload path is null or empty; otherwise, false.</returns>
+		protected bool F_ShowLink(string _DocUplPath)
+		{
+			return string.IsNullOrEmpty(_DocUplPath);
+		}
+
+		/// <summary>
+		/// Checks the existence of a file associated with the given document revision number.
+		/// Deletes the file from the server if it exists.
+		/// </summary>
+		/// <param name="_RevisionNo">The document revision number to check.</param>
+		private void F_CheckFileExistence(string _RevisionNo)
+		{
+			string WhereClause = $"WHERE [Obj].[DOC_REVISION_NO] = '{_RevisionNo}' AND ";
+			WhereClause += $"[Obj].[DOC_REMARK] = (SELECT [DO_NO] FROM [dbo].[M_DELIVERY_ORDER_HDR] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}') ";
+			DataTable dataTable = F_ReceiveINVData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return;
+			}
+			DataRow row = dataTable.Rows[0];
+			string UplPath = row["DOC_UPL_PATH"]?.ToString();
+			string FileName = row["DOC_UPL_FILE_NAME"].ToString();
+			string VirtualPath = Path.Combine(UplPath, FileName);
+			string AbslutePath = Server.MapPath(VirtualPath);
+			if (string.IsNullOrEmpty(UplPath))
+			{
+				return;
+			}
+			if (!File.Exists(AbslutePath))
+			{
+				return;
+			}
+			GF_DeleteFileFromServer(AbslutePath);
 		}
 
 		/// <summary>
@@ -385,7 +468,7 @@ namespace CUBIC_CIBT_Project
 			//Check value Existence (Document Revision No)
 			string SelectData = "[DOC_REVISION_NO] ";
 			string WhereClause = $"WHERE [DOC_REVISION_NO] = '{txtRevisionNo.Text}' AND [DOC_REMARK] = ";
-			WhereClause += $"(SELECT [DO_NO] FROM [dbo].[M_DELIVERY_ORDER_HDR] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}' ";
+			WhereClause += $"(SELECT [INV_NO] FROM [dbo].[M_INVOICE] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}') ";
 			TableDetails tableDetails = F_GetTableDetails(new T_Document(), WhereClause);
 			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
 
@@ -430,7 +513,7 @@ namespace CUBIC_CIBT_Project
 			}
 			//Ensure the Balanced amount doesnt exceed the limit after receive the amount.
 			decimal ToPaidAmount = decimal.Parse(txtPaidAmount.Text, CultureInfo.InvariantCulture);
-			if(ReceiableAmount - ToPaidAmount < 0)
+			if (ReceiableAmount - ToPaidAmount < 0)
 			{
 				_FailedMessage = $"The To Paid Amount has already exceed the Balanced Amount, You only require {ReceiableAmount - ToPaidAmount} To finish the payment.";
 				return false;
@@ -456,7 +539,7 @@ namespace CUBIC_CIBT_Project
 				_FailedMessage = "There\'s an issue while receiving the data, Please try again later.";
 				return -1;
 			}
-			if(dataTable.Rows.Count == 0)
+			if (dataTable.Rows.Count == 0)
 			{
 				_FailedMessage = "Kindly Create the PO document before create the invoices.";
 				return -1;

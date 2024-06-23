@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using static CUBIC_CIBT_Project.GlobalProjectClass;
@@ -394,5 +395,27 @@ namespace CUBIC_CIBT_Project
 			string Extension = Path.GetExtension(_originalFileName);
 			return $"{UniqueId}{Extension}";
 		}
+
+		public static bool GF_DeleteFileFromServer(string _ServerPath)
+		{
+			if (File.Exists(_ServerPath))
+			{
+				try
+				{
+					// Delete the file
+					File.Delete(_ServerPath);	
+				}
+				catch (Exception ex)
+				{
+					GF_InsertAuditLog("-", "Catch Error", "GF_InsertAuditLog", "GF_DeleteFileFromServer", ex.ToString());
+				}
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
 	}
 }

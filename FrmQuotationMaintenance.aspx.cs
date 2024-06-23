@@ -189,12 +189,14 @@ namespace CUBIC_CIBT_Project
 				Doc_No = GF_GenerateID(tempBU, "DOC"),
 				Doc_BU = tempBU,
 				Doc_Status = char.Parse(rbStatus.SelectedValue),
-				Doc_Revision_No = DrpListRevisionNo.SelectedValue,
+				Doc_Revision_No = txtRevisionNo.Text,
 				Doc_Remark = tempQONo,
 				Doc_Type = "QO",
 				Doc_Date = DateTime.Parse(txtQuotationDate.Text).ToString("yyyy-MM-dd"),
+				Doc_Created_By = G_UserLogin,
+				Doc_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
 				Doc_Modified_By = G_UserLogin,
-				Doc_Created_By = G_UserLogin
+				Doc_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
 			if (ChooseFileUpload.HasFile)
 			{
@@ -236,6 +238,9 @@ namespace CUBIC_CIBT_Project
 			};
 			if (ChooseFileUpload.HasFile)
 			{
+				//Delete the file that upload at this doc No recently
+				F_CheckFileExistence(DrpListRevisionNo.SelectedValue);
+
 				//Create the Server Folder Path
 				string UploadPath = "~/Documents/Quotation/";
 				string serverFolderPath = Server.MapPath(UploadPath);
@@ -280,10 +285,12 @@ namespace CUBIC_CIBT_Project
 		protected void EditDoc_Click(object sender, EventArgs e)
 		{
 			Button btn = (Button)sender;
-			//Join Document with DO Details table
-			string JoinClause = "JOIN [dbo].[M_QUOTATION] QO ON [QO].[DOC_NO] = [Obj].[DOC_REMARK] ";
 			string WhereClause = $"WHERE [DOC_NO] = '{btn.CommandArgument}' ";
-			DataTable dataTable = DB_ReadData(F_GetTableDetails(new T_Document(), $"{JoinClause} {WhereClause}"));
+			DataTable dataTable = F_ReceiveQOData(WhereClause);
+			if(dataTable == null)
+			{
+				return;
+			}
 			if (dataTable.Rows.Count == 0)
 			{
 				return;
@@ -299,16 +306,6 @@ namespace CUBIC_CIBT_Project
 			DrpListProjectCode.SelectedValue = row["PROJ_NO"]?.ToString();
 		}
 
-		///<summary>
-		/// Event handler for the Download button click, allows user to download the selected Document file.
-		///</summary>
-		///<param name="sender">The object that raises the event.</param>
-		///<param name="e">The event arguments.</param>
-		protected void DownloadDoc_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		/// <summary>
 		/// Displays a list of quotation data in a repeater control for viewing purposes.
 		/// </summary
@@ -316,13 +313,63 @@ namespace CUBIC_CIBT_Project
 		{
 			string WhereClause = "WHERE [Doc].[DOC_TYPE] = 'QO' AND [Doc].[DOC_STATUS] != 'X' ";
 			string JoinClause = "JOIN [dbo].[T_DOCUMENT] Doc ON [Doc].[DOC_REMARK] = [Obj].[QO_NO]";
-			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], [Doc].[DOC_REVISION_NO], ";
+			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], [Doc].[DOC_REVISION_NO], [Doc].[DOC_UPL_PATH], ";
 			SelectData += "[Obj].[Proj_No] ";
 			TableDetails tableDetails = F_GetTableDetails(new M_Quotation(), $"{JoinClause} {WhereClause}");
 			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
 
 			QOMRepeater.DataSource = dataTable;
 			QOMRepeater.DataBind();
+		}
+
+		///<summary>
+		/// Retrieves Quotation data based on the provided Document number.
+		///</summary>
+		///<param name="_WhereClause">The Document number used to fetch Quotation data.</param>
+		///<returns>A DataTable containing Quotation data.</returns>
+		private DataTable F_ReceiveQOData(string _WhereClause)
+		{
+			//Join Document with DO Details table
+			string JoinClause = "JOIN [dbo].[M_QUOTATION] QO ON [QO].[DOC_NO] = [Obj].[DOC_REMARK] ";
+			TableDetails tableDetails = F_GetTableDetails(new T_Document(), $"{JoinClause} {_WhereClause}");
+			return DB_ReadData(tableDetails);
+		}
+
+		/// <summary>
+		/// Retrieves the URL of a Quotation file based on the document number.
+		/// </summary>
+		/// <param name="_DocNo">Document number used to retrieve the Quotation file information.</param>
+		/// <returns>
+		/// The URL of the Quotation file if found; otherwise, returns "#" indicating a dummy link.
+		/// </returns>
+		protected string F_GetQuotationFileUrl(string _DocNo)
+		{
+			string WhereClause = $"WHERE [DOC_NO] = '{_DocNo}' ";
+
+			DataTable dataTable = F_ReceiveQOData(WhereClause);
+			// Return a dummy link if the file is not found
+			if (dataTable == null)
+			{
+				return "#";
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return "#";
+			}
+			DataRow row = dataTable.Rows[0];
+			string fileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+			string virtualPath = Path.Combine(row["DOC_UPL_PATH"]?.ToString(), fileName);
+			return ResolveUrl(virtualPath);
+		}
+
+		/// <summary>
+		/// Determines whether to show a link based on the provided document upload path.
+		/// </summary>
+		/// <param name="_DocUplPath">The document upload path to evaluate.</param>
+		/// <returns>True if the document upload path is null or empty; otherwise, false.</returns>
+		protected bool F_ShowLink(string _DocUplPath)
+		{
+			return string.IsNullOrEmpty(_DocUplPath);
 		}
 
 		/// <summary>
@@ -336,6 +383,45 @@ namespace CUBIC_CIBT_Project
 			TableDetails tableDetails = F_GetTableDetails(new M_Quotation(), WhereClause);
 			return DB_ReadData(tableDetails, SelectData);
 		}
+
+		/// <summary>
+		/// Checks the existence of a file associated with the given document revision number.
+		/// Deletes the file from the server if it exists.
+		/// </summary>
+		/// <param name="_RevisionNo">The document revision number to check.</param>
+		private void F_CheckFileExistence(string _RevisionNo)
+		{
+			string WhereClause = $"WHERE [Obj].[DOC_REVISION_NO] = '{_RevisionNo}' AND ";
+			WhereClause += $"[Obj].[DOC_REMARK] = (SELECT [DO_NO] FROM [dbo].[M_DELIVERY_ORDER_HDR] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}') ";
+			DataTable dataTable = F_ReceiveQOData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return;
+			}
+			DataRow row = dataTable.Rows[0];
+
+			string UplPath = row["DOC_UPL_PATH"]?.ToString();
+			string FileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+
+			string VirtualPath = Path.Combine(UplPath, FileName);
+			string AbslutePath = Server.MapPath(VirtualPath);
+
+			if (string.IsNullOrEmpty(UplPath))
+			{
+				return;
+			}
+			if (!File.Exists(AbslutePath))
+			{
+				return;
+			}
+
+			GF_DeleteFileFromServer(AbslutePath);
+		}
+
 
 		/// <summary>
 		/// Checks if a document revision number already exists in the database for a given project when in "Create" mode.
@@ -353,7 +439,7 @@ namespace CUBIC_CIBT_Project
 			//Check value Existence (Document Revision No)
 			string SelectData = "[DOC_REVISION_NO] ";
 			string WhereClause = $"WHERE [DOC_REVISION_NO] = '{txtRevisionNo.Text}' AND [DOC_REMARK] = ";
-			WhereClause += $"(SELECT [DO_NO] FROM [dbo].[M_DELIVERY_ORDER_HDR] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}' ";
+			WhereClause += $"(SELECT [qO_NO] FROM [dbo].[M_QUOTATION] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}') ";
 			TableDetails tableDetails = F_GetTableDetails(new T_Document(), WhereClause);
 			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
 

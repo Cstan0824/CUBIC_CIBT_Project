@@ -101,7 +101,7 @@ namespace CUBIC_CIBT_Project
 		protected void BtnConfirmSave_Click(object sender, EventArgs e)
 		{
 			string FailedMessage = "";
-			if (!F_CheckUsernameExistence(out FailedMessage))
+			if (!F_CheckProjectNameExistence(out FailedMessage))
 			{
 				ScriptManager.RegisterStartupScript(this.Page, this.GetType(), "Modal_Failed", "closeModal(); showErrorModal('Failed', '" + FailedMessage + "');", true);
 				return;
@@ -191,7 +191,9 @@ namespace CUBIC_CIBT_Project
 				Proj_BU = tempBU,
 				Proj_Status = rbStatus.SelectedValue[0],
 				Proj_Created_By = G_UserLogin,
-				Proj_Modified_By = G_UserLogin
+				Proj_Modified_By = G_UserLogin,
+				Proj_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
+				Proj_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
 
 			TableDetails tableDetails = F_GetTableDetails(proj_master);
@@ -278,7 +280,7 @@ namespace CUBIC_CIBT_Project
 		private string F_CreateDeliveryOrderCode(string _tempDate)
 		{
 			string tempBU = "CS";
-			string tempPrefix = "BS";
+			string tempPrefix = "DO";
 			int runningNumber = GF_GetRunningNumber(tempBU, tempPrefix);
 			DateTime date = DateTime.Parse(_tempDate);
 			int year = date.Year;
@@ -339,7 +341,7 @@ namespace CUBIC_CIBT_Project
 		/// </summary>
 		/// <param name="_FailedMessage">Out parameter that holds the error message if the name exists or if there is an issue retrieving data.</param>
 		/// <returns>True if the name does not exist or if the mode is not "Create"; otherwise, false.</returns>
-		private bool F_CheckUsernameExistence(out string _FailedMessage)
+		private bool F_CheckProjectNameExistence(out string _FailedMessage)
 		{
 			if (ddlProjectMode.SelectedValue != "C")
 			{
@@ -350,7 +352,7 @@ namespace CUBIC_CIBT_Project
 			//Check value Existence (Project name)
 			string SelectData = "[PROJ_NAME] ";
 			string WhereClause = $"WHERE [PROJ_NAME] = '{txtProjectName.Text}' ";
-			TableDetails tableDetails = F_GetTableDetails(new M_Customer(), WhereClause);
+			TableDetails tableDetails = F_GetTableDetails(new M_Project_Master(), WhereClause);
 			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
 			if (dataTable == null)
 			{

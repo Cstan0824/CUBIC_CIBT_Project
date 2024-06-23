@@ -32,7 +32,7 @@ namespace CUBIC_CIBT_Project
 
 				//Authenticate and Authorize access
 				Dictionary<string, HtmlGenericControl> Access = new Dictionary<string, HtmlGenericControl>()
-				{ ["V_PoM"] = V_PoM, ["V_PoM"] = E_PoM };
+				{ ["V_PoM"] = V_PoM, ["E_PoM"] = E_PoM };
 				bool HasAccess = GF_DisplayWithAccessibility(userDetails.User_Access, Access);
 				if (!HasAccess)
 				{
@@ -74,7 +74,7 @@ namespace CUBIC_CIBT_Project
 				string SelectDocRemark = "(SELECT [DOC_REMARK] FROM [dbo].[T_DOCUMENT] WHERE [DOC_TYPE] = 'PO')";
 				string SelectProjNo = $"(SELECT [PROJ_NO] FROM [dbo].[M_PURCHASE_ORDER] WHERE [PO_NO] IN {SelectDocRemark})";
 				string WhereClause = $"WHERE [PROJ_STATUS] != 'X' AND [PROJ_NO] {InOrNotIn} IN {SelectProjNo} ";
-				
+
 				GF_PopulateProjCode(DrpListProjectCode, WhereClause);
 				GF_PopulateDocNo(DrpListPaymentMethod, new M_Inv_Installment(), "INSTALLMENT_PERIOD");
 			}
@@ -140,10 +140,13 @@ namespace CUBIC_CIBT_Project
 		protected void EditDoc_Click(object sender, EventArgs e)
 		{
 			Button btn = (Button)sender;
-			string JoinClause = "JOIN [dbo].[M_PURCHASE_ORDER] PO ON [PO].[PO_NO] = [Obj].[DOC_REMARK] " ;
-			JoinClause += "JOIN [dbo].[M_INVOICE] INV ON [INV].[PROJ_NO] = [PO].[PROJ_NO] ";
 			string WhereClause = $"WHERE [Obj].[DOC_NO] = '{btn.CommandArgument}' ";
-			DataTable dataTable = DB_ReadData(F_GetTableDetails(new T_Document(), $"{JoinClause} {WhereClause}"));
+			DataTable dataTable = F_ReceivePOData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+
+			}
 			if (dataTable.Rows.Count == 0)
 			{
 				return;
@@ -161,15 +164,7 @@ namespace CUBIC_CIBT_Project
 			DrpListProjectCode.SelectedValue = row["PROJ_NO"]?.ToString();
 		}
 
-		///<summary>
-		/// Event handler for the Download button click, allows user to download the selected Document file.
-		///</summary>
-		///<param name="sender">The object that raises the event.</param>
-		///<param name="e">The event arguments.</param>
-		protected void DownloadDoc_Click(object sender, EventArgs e)
-		{
 
-		}
 
 		/// <summary>
 		/// Initiates the process of saving a new or updated purchase order based on the selected mode.
@@ -185,7 +180,7 @@ namespace CUBIC_CIBT_Project
 				return;
 			}
 			string ddlMode = "";
-			switch(ddlPurchaseOrderMode.SelectedValue)
+			switch (ddlPurchaseOrderMode.SelectedValue)
 			{
 				case "U":
 					ddlMode = "Updated";
@@ -223,13 +218,16 @@ namespace CUBIC_CIBT_Project
 				Doc_Status = char.Parse(rbStatus.SelectedValue),
 				Doc_BU = "CS",
 				Doc_Created_By = G_UserLogin,
-				Doc_Modified_By = G_UserLogin
+				Doc_Created_Date = DateTime.Now.ToString("yyyy-MM-dd"),
+				Doc_Modified_By = G_UserLogin,
+				Doc_Modified_Date = DateTime.Now.ToString("yyyy-MM-dd")
 			};
-			M_Purchase_Order m_Purchase_Order = new M_Purchase_Order() { 
+			M_Purchase_Order m_Purchase_Order = new M_Purchase_Order()
+			{
 				PO_No = tempPONo,
 				Proj_No = DrpListProjectCode.SelectedValue,
 				PO_Total_Paid_Amount = decimal.Parse(txtTotalPaidAmount.Text, CultureInfo.InvariantCulture),
-			
+
 			};
 			if (ChooseFileUpload.HasFile)
 			{
@@ -278,6 +276,9 @@ namespace CUBIC_CIBT_Project
 			};
 			if (ChooseFileUpload.HasFile)
 			{
+				//Delete the file that upload at this doc No recently
+				F_CheckFileExistence(DrpListProjectCode.SelectedValue);
+
 				//Create the Server Folder Path
 				string UploadPath = "~/Documents/Purchase Order/";
 				string serverFolderPath = Server.MapPath(UploadPath);
@@ -297,7 +298,7 @@ namespace CUBIC_CIBT_Project
 			string PO_WhereClause = $"WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}' ";
 			string DocWhereClause = $"WHERE [DOC_REMARK] = ";
 			DocWhereClause += $"(SELECT [PO_NO] FROM [dbo].[M_PURCHASE_ORDER] WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}') ";
-			
+
 			//Create Query
 			TableDetails PO_TableDetails = F_GetTableDetails(m_Purchase_Order, PO_WhereClause, IsUpdateMethod: true);
 			TableDetails Doc_TableDetails = F_GetTableDetails(t_Document, DocWhereClause, IsUpdateMethod: true);
@@ -315,7 +316,8 @@ namespace CUBIC_CIBT_Project
 		{
 			//Update the Payment method at Invoice Hdr table
 			string WhereClause = $"WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}' ";
-			M_Invoice m_Invoice = new M_Invoice() { 
+			M_Invoice m_Invoice = new M_Invoice()
+			{
 				INV_Installment_ID = DrpListPaymentMethod.SelectedIndex
 			};
 			TableDetails tableDetails = F_GetTableDetails(m_Invoice, WhereClause, IsUpdateMethod: true);
@@ -329,7 +331,7 @@ namespace CUBIC_CIBT_Project
 		{
 			string JoinClause = "JOIN [dbo].[T_DOCUMENT] Doc ON [Doc].[DOC_REMARK] = [Obj].[PO_NO]";
 			string WhereClause = "WHERE [Doc].[DOC_TYPE] = 'PO' AND [Doc].[DOC_STATUS] != 'X' ";
-			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], ";
+			string SelectData = "[Doc].[DOC_NO], [Doc].[DOC_DATE], [Doc].[DOC_STATUS], [Doc].[DOC_UPL_PATH], ";
 			SelectData += "[Obj].[PO_TOTAL_PAID_AMOUNT], [Obj].[PROJ_NO] ";
 			DataTable dataTable = DB_ReadData(F_GetTableDetails(new M_Purchase_Order(), $"{JoinClause} {WhereClause}"), SelectData);
 			POMRepeater.DataSource = dataTable;
@@ -353,6 +355,99 @@ namespace CUBIC_CIBT_Project
 			return primaryCode;
 		}
 
+		///<summary>
+		/// Retrieves Purchase Order data based on the provided Document number.
+		///</summary>
+		///<param name="_WhereClause">The Document number used to fetch Purchase Order data.</param>
+		///<returns>A DataTable containing Purchase Order data.</returns>
+		private DataTable F_ReceivePOData(string _WhereClause)
+		{
+			string JoinClause = "JOIN [dbo].[M_PURCHASE_ORDER] PO ON [PO].[PO_NO] = [Obj].[DOC_REMARK] ";
+			JoinClause += "JOIN [dbo].[M_INVOICE] INV ON [INV].[PROJ_NO] = [PO].[PROJ_NO] ";
+			TableDetails tableDetails = F_GetTableDetails(new T_Document(), $"{JoinClause} {_WhereClause}");
+			return DB_ReadData(tableDetails);
+		}
+
+		/// <summary>
+		/// Retrieves the URL of a Purchase Order file based on the document number.
+		/// </summary>
+		/// <param name="_DocNo">Document number used to retrieve the Purchase Order file information.</param>
+		/// <returns>
+		/// The URL of the Purchase Order file if found; otherwise, returns "#" indicating a dummy link.
+		/// </returns>
+		protected string F_GetPurchaseOrderFileUrl(string _DocNo)
+		{
+			string WhereClause = $"WHERE [Obj].[DOC_NO] = '{_DocNo}' ";
+			DataTable dataTable = F_ReceivePOData(WhereClause);
+			// Return a dummy link if the file is not found
+			if (dataTable == null)
+			{
+				return "#";
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return "#";
+			}
+			DataRow row = dataTable.Rows[0];
+			string fileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+			string virtualPath = Path.Combine(row["DOC_UPL_PATH"]?.ToString(), fileName);
+			return ResolveUrl(virtualPath);
+		}
+
+		/// <summary>
+		/// Determines whether to show a link based on the provided document upload path.
+		/// </summary>
+		/// <param name="_DocUplPath">The document upload path to evaluate.</param>
+		/// <returns>True if the document upload path is null or empty; otherwise, false.</returns>
+		protected bool F_ShowLink(string _DocUplPath)
+		{
+			return string.IsNullOrEmpty(_DocUplPath);
+		}
+
+		/// <summary>
+		/// Checks the existence of a file associated with the given document revision number.
+		/// Deletes the file from the server if it exists.
+		/// </summary>
+		/// <param name="_ProjNo">The document revision number to check.</param>
+		private void F_CheckFileExistence(string _ProjNo)
+		{
+			string WhereClause = $"WHERE [Obj].[DOC_REMARK] = (SELECT [DO_NO] FROM [dbo].[M_DELIVERY_ORDER_HDR] WHERE [PROJ_NO] = '{_ProjNo}') ";
+			DataTable dataTable = F_ReceivePOData(WhereClause);
+			if (dataTable == null)
+			{
+				return;
+			}
+			if (dataTable.Rows.Count == 0)
+			{
+				return;
+			}
+			DataRow row = dataTable.Rows[0];
+
+			string UplPath = row["DOC_UPL_PATH"]?.ToString();
+			string FileName = row["DOC_UPL_FILE_NAME"]?.ToString();
+
+			string VirtualPath = Path.Combine(UplPath, FileName);
+			string AbslutePath = Server.MapPath(VirtualPath);
+
+			if (string.IsNullOrEmpty(UplPath))
+			{
+				return;
+			}
+			if (!File.Exists(AbslutePath))
+			{
+				return;
+			}
+
+			GF_DeleteFileFromServer(AbslutePath);
+		}
+
+		/// <summary>
+		/// Checks the existence of a Purchase Order (PO) within a specific project.
+		/// </summary>
+		/// <param name="_FailedMessage">Out parameter to return error messages if the check fails.</param>
+		/// <returns>
+		/// True if the Purchase Order does not exist in the project and the mode is not "Create" (ddlPurchaseOrderMode.SelectedValue != "C"); otherwise, returns false.
+		/// </returns>
 		private bool F_CheckPOExistence(out string _FailedMessage)
 		{
 			if (ddlPurchaseOrderMode.SelectedValue != "C")
@@ -364,7 +459,7 @@ namespace CUBIC_CIBT_Project
 			//Check value Existence (Purchase Order)
 			string SelectData = "[PO_NO] ";
 			string WhereClause = $"WHERE [PROJ_NO] = '{DrpListProjectCode.SelectedValue}' ";
-			TableDetails tableDetails = F_GetTableDetails(new T_Document(), WhereClause);
+			TableDetails tableDetails = F_GetTableDetails(new M_Purchase_Order(), WhereClause);
 			DataTable dataTable = DB_ReadData(tableDetails, SelectData);
 
 			if (dataTable == null)

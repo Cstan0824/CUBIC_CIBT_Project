@@ -60,13 +60,13 @@ namespace CUBIC_CIBT_Project
 		protected global::System.Web.UI.WebControls.Label lblProjectNo;
 
 		/// <summary>
-		/// hiddProjStatus control.
+		/// ProjStatus control.
 		/// </summary>
 		/// <remarks>
 		/// Auto-generated field.
 		/// To modify move field declaration from designer file to code-behind file.
 		/// </remarks>
-		protected global::System.Web.UI.WebControls.HiddenField hiddProjStatus;
+		protected global::System.Web.UI.HtmlControls.HtmlGenericControl ProjStatus;
 
 		/// <summary>
 		/// lblProjectDate control.

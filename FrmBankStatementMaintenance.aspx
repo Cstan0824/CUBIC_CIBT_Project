@@ -348,7 +348,12 @@
 																				<li>
 																					<asp:Button class="dropdown-item" ID="EditDoc" runat="server" Text="Edit" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="EditDoc_Click" /></li>
 																				<li>
-																					<asp:Button class="dropdown-item" ID="DownloadDoc" runat="server" Text="Download" CommandArgument='<%# Eval("DOC_NO") %>' OnClick="DownloadDoc_Click" /></li>
+																					<asp:HyperLink class="dropdown-item" ID="DownloadDoc" runat="server"
+																						NavigateUrl='<%# F_GetBankStatementFileUrl(Eval("DOC_NO").ToString()) %>'
+																						Text="View File" Target="_blank" Visible='<%# !F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'></asp:HyperLink>
+																					<span class="dropdown-item-text text-muted" runat="server" Visible='<%# F_ShowLink(Eval("DOC_UPL_PATH").ToString()) %>'>No File Available</span>
+
+																				</li>
 																			</ul>
 																		</td>
 																	</tr>
